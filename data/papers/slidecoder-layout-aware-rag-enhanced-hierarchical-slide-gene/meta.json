@@ -1,0 +1,13 @@
+{
+  "id": "slidecoder-layout-aware-rag-enhanced-hierarchical-slide-gene",
+  "title": "SlideCoder: Layout-aware RAG-enhanced Hierarchical Slide Generation from Design",
+  "origin_filename": "slidecoder-layout-aware-rag-enhanced-hierarchical-slide-gene.pdf",
+  "status": "preprocessed",
+  "category": "document-generation/slides",
+  "authors": [],
+  "year": null,
+  "created_at": "2026-05-09T11:02:32+00:00",
+  "updated_at": "2026-05-09T11:52:25+00:00",
+  "pdf_path": "source.pdf",
+  "paragraph_count": 125
+}

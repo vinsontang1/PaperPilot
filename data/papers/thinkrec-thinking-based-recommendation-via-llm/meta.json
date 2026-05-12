@@ -1,0 +1,13 @@
+{
+  "id": "thinkrec-thinking-based-recommendation-via-llm",
+  "title": "ThinkRec: Thinking-based Recommendation via LLM",
+  "origin_filename": "thinkrec-thinking-based-recommendation-via-llm.pdf",
+  "status": "preprocessed",
+  "category": "recommendation/llm4rec",
+  "authors": [],
+  "year": null,
+  "created_at": "2026-05-08T07:19:35+00:00",
+  "updated_at": "2026-05-08T07:28:37+00:00",
+  "pdf_path": "source.pdf",
+  "paragraph_count": 97
+}

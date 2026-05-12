@@ -1,0 +1,1754 @@
+{
+  "paragraphs": [
+    {
+      "pid": "p_1_1",
+      "page": 1,
+      "index_on_page": 1,
+      "bbox": [
+        206.0,
+        91.0,
+        843.0,
+        135.0
+      ],
+      "text_en": "SlideCoder: Layout-aware RAG-enhanced Hierarchical Slide Generation from Design",
+      "text_zh": "# SlideCoder: Layout-aware RAG-enhanced Hierarchical Slide Generation from Design / 从设计图出发的布局感知、RAG 增强层次化幻灯片生成",
+      "kind": "body"
+    },
+    {
+      "pid": "p_1_3",
+      "page": 1,
+      "index_on_page": 3,
+      "bbox": [
+        260.0,
+        260.0,
+        339.0,
+        275.0
+      ],
+      "text_en": "Abstract",
+      "text_zh": "## Abstract / 摘要",
+      "kind": "body"
+    },
+    {
+      "pid": "p_1_4",
+      "page": 1,
+      "index_on_page": 4,
+      "bbox": [
+        141.0,
+        291.0,
+        460.0,
+        646.0
+      ],
+      "text_en": "Manual slide creation is labor-intensive and requires expert prior knowledge. Existing natural language-based LLM generation methods struggle to capture the visual and structural nuances of slide designs. To address this, we formalize the Reference Image to Slide Generation task and propose Slide2Code, the first benchmark with difficulty-tiered samples based on a novel Slide Complexity Metric. We introduce SlideCoder, a layout-aware, retrieval-augmented framework for generating editable slides from reference images. SlideCoder integrates a Color Gradient-based Segmentation algorithm and a Hierarchical Retrieval-Augmented Generation method to decompose complex tasks and enhance code generation. We also release SlideMaster, a 7B open-source model fine-tuned with improved reverse-engineered data. Experiments show that SlideCoder outperforms state-of-the-art baselines by up to 40.5 points, demonstrating strong performance across layout fidelity, execution accuracy, and visual consistency. Our code is available at https://github.com/ vinsontang1/SlideCoder.",
+      "text_zh": "手工制作幻灯片耗时费力，并且需要专业的先验知识。现有基于自然语言的 LLM 生成方法，难以准确捕捉幻灯片设计中的视觉细节和结构差异。为此，本文形式化提出 Reference Image to Slide Generation 任务，并构建 Slide2Code：首个基于新提出的 Slide Complexity Metric 划分难度层级的 benchmark。我们提出 SlideCoder，一个布局感知、检索增强的框架，可根据参考图生成可编辑幻灯片。SlideCoder 结合 Color Gradient-based Segmentation 算法与 Hierarchical Retrieval-Augmented Generation 方法，将复杂任务分解并增强代码生成。我们还发布 SlideMaster，这是一个基于改进逆向工程数据微调的 7B 开源模型。实验表明，SlideCoder 相比最强基线最多提升 40.5 分，在 layout 保真度、执行准确率与视觉一致性方面均表现突出。代码见项目主页。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_1_5",
+      "page": 1,
+      "index_on_page": 5,
+      "bbox": [
+        114.0,
+        661.0,
+        258.0,
+        676.0
+      ],
+      "text_en": "1 Introduction",
+      "text_zh": "## 1 Introduction / 引言",
+      "kind": "body"
+    },
+    {
+      "pid": "p_1_6",
+      "page": 1,
+      "index_on_page": 6,
+      "bbox": [
+        112.0,
+        688.0,
+        487.0,
+        784.0
+      ],
+      "text_en": "Slide creation is essential in academic and professional communication for visually conveying complex ideas. However, manual design is laborintensive and time-consuming (Al Masum et al., 2005). While templates offer some relief, they enforce fixed layouts and styles, limiting flexibility.",
+      "text_zh": "幻灯片制作是学术与专业交流中的重要环节，用于以视觉方式表达复杂想法。然而，手工设计既耗时又费力（Al Masum et al., 2005）。模板能在一定程度上减轻负担，但固定的 layout 与样式会限制灵活性。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_1_7",
+      "page": 1,
+      "index_on_page": 7,
+      "bbox": [
+        112.0,
+        785.0,
+        487.0,
+        897.0
+      ],
+      "text_en": "Recent progress in Large Language Models (LLMs) (Nam et al., 2024; Ge et al., 2023) has sparked interest in automatic slide creation. AutoPresent (Ge et al., 2025), an early study on the Natural Language (NL) to slide generation task, fine-tunes a LLAMA-based model (Grattafiori et al., 2024) on the diversified SLIDESBENCH dataset. It translates NL instructions into Python code, which invokes SLIDESLIB, a high-level API built on python-pptx (Canny, 2023), to construct each slide. This pipeline reduces manual effort and streamlines design workflows.",
+      "text_zh": "Large Language Models（LLMs）的最新进展（Nam et al., 2024; Ge et al., 2023）激发了自动幻灯片生成的研究兴趣。AutoPresent（Ge et al., 2025）是 Natural Language（NL）to slide generation 任务的早期工作，它在多样化的 SLIDESBENCH 数据集上微调基于 LLAMA 的模型（Grattafiori et al., 2024）。该方法将 NL 指令转换为 Python 代码，再调用基于 python-pptx（Canny, 2023）构建的高层 API SLIDESLIB 来生成每页幻灯片。这一流程降低了人工工作量，并简化了设计流程。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_1_8",
+      "page": 1,
+      "index_on_page": 8,
+      "bbox": [
+        507.0,
+        564.0,
+        882.0,
+        612.0
+      ],
+      "text_en": "Despite Autopresent’s capability to generate slides from natural language input, several significant challenges remain unaddressed.",
+      "text_zh": "尽管 AutoPresent 能够根据自然语言输入生成幻灯片，但仍有若干关键挑战尚未解决。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_1_9",
+      "page": 1,
+      "index_on_page": 9,
+      "bbox": [
+        507.0,
+        614.0,
+        884.0,
+        822.0
+      ],
+      "text_en": "First, natural language inherently lacks an accurate description of slide visual design (e.g., color, layout, and style) and users sometimes directly input the design image for slide generation. For example, as shown in Figure 1, a user sees a nice design from non-editable slides (png and pdf format) or other source like webpage design, and hopes to convert it into an editable slide (pptx format). Or the user lacks the skills to make slides, they can generate the slide by input their design image. In these scenarios, the Multimodal Large Language Models (MLLMs) are needed to understand the design and generate slides.",
+      "text_zh": "首先，自然语言天然难以精确描述幻灯片的视觉设计，例如颜色、layout 与风格；而用户有时会直接输入设计图来生成幻灯片。例如，如图 1 所示，用户看到来自不可编辑幻灯片（png 或 pdf 格式）或网页设计等来源的优秀设计，希望将其转换为可编辑幻灯片（pptx 格式）。或者用户缺乏制作幻灯片的技能，也可以通过输入设计图来生成幻灯片。在这些场景中，需要 Multimodal Large Language Models（MLLMs）理解设计并生成幻灯片。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_1_10",
+      "page": 1,
+      "index_on_page": 10,
+      "bbox": [
+        507.0,
+        824.0,
+        884.0,
+        921.0
+      ],
+      "text_en": "Second, MLLMs face limitations when handling complex slides, particularly those incorporating diverse element types and high element density. As illustrated in Figure 1, these discrepancies can be divided into three categories: miss, which stands for the complete omission of certain visual or textual elements (e.g., the top left corner of the shape is missing); incorrect, referring to deviations in visual styles or attributes from those specified or expected in the reference slides (e.g., title is not bold); and disorder, which describes significant differences in spatial arrangements and alignment of elements compared to the original layout (e.g., the three subheadings are not properly positioned and aligned.).",
+      "text_zh": "其次，MLLMs 在处理复杂幻灯片时存在局限，尤其是面对元素类型多样、元素密度较高的页面。如图 1 所示，这些差异可分为三类：miss，表示某些视觉或文本元素被完全遗漏（例如左上角形状缺失）；incorrect，表示视觉样式或属性偏离参考幻灯片中指定或预期的效果（例如标题没有加粗）；disorder，表示元素的空间排列与对齐方式相较原始 layout 存在显著差异（例如三个小标题没有正确定位和对齐）。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_2_1",
+      "page": 2,
+      "index_on_page": 1,
+      "bbox": [
+        115.0,
+        229.0,
+        489.0,
+        501.0
+      ],
+      "text_en": "Third, MLLMs’ insufficient comprehension of the python-pptx library leads to the generation of syntactically invalid or non-executable code. Autopresent (Ge et al., 2025) attempts to address this issue by constructing SLIDESLIB, a simplified library built upon python-pptx, encapsulating commonly used operations into a set of high-level APIs. However, this operation inherently restricts the flexibility and comprehensiveness of slide generation. Specifically, SLIDESLIB currently supports only five basic operation types, which neglects more intricate layouts and design requirements commonly encountered in realistic scenarios. Consequently, presentations produced by this approach tend to be overly simplistic, inadequately capturing complex human intentions and detailed visual expectations.",
+      "text_zh": "第三，MLLMs 对 python-pptx 库理解不足，导致生成语法无效或无法执行的代码。AutoPresent（Ge et al., 2025）尝试通过构建 SLIDESLIB 解决这一问题：SLIDESLIB 是一个基于 python-pptx 的简化库，将常用操作封装为一组高层 API。然而，这种做法本质上限制了幻灯片生成的灵活性与完整性。具体而言，SLIDESLIB 目前仅支持五类基础操作，无法覆盖真实场景中常见的更复杂 layout 和设计需求。因此，该方法生成的演示文稿往往过于简单，难以充分表达复杂的人类意图与细致的视觉期望。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_2_2",
+      "page": 2,
+      "index_on_page": 2,
+      "bbox": [
+        115.0,
+        502.0,
+        489.0,
+        920.0
+      ],
+      "text_en": "To address the aforementioned limitations, we introduce SlideCoder, a layout-aware RAG-enhanced hierarchical slide generation framework, which can understand the complex slides and python-pptx library accurately. First, we formulate a novel task, Reference Image (RI) to slide generation, i.e., automatically generating the code for replicating the slide, which is visually consistent with RI. To evaluate the performance of SlideCoder under complex slide scenarios, we propose a novel Slide Complexity Metric (SCM), and construct a new benchmark Slide2Code with different difficulty levels based on SCM. Second, we develop a novel Color Gradients-based Segmentation algorithm (CGSeg) that effectively decomposes slide images into semantically meaningful regions. Besides, we propose the Layout-aware Prompt, which integrates the position information of elements to enhance MLLM’s understanding of slide layout. Third, we propose a novel Hierarchical Retrieval-Augmented Generation (H-RAG)-based Code Generation method, which employs a dual-level retrieval-augmented knowledge base (Cuconasu et al., 2024; Fan et al., 2024) to explicitly enhance MLLMs’ understanding of the python-pptx library. At the higher level, a Shape Type Knowledge Base (TS-KB) systematically classifies slide elements and standardizes their descriptions using pythonpptx API terminologies. At the lower level, a Operation Function Knowledge Base (OF-KB) captures precise syntactic patterns and invocation paradigms of python-pptx library functions.",
+      "text_zh": "为解决上述限制，我们提出 SlideCoder：一个布局感知、RAG 增强的层次化幻灯片生成框架，能够更准确地理解复杂幻灯片和 python-pptx 库。首先，我们定义一个新任务：Reference Image（RI）to slide generation，即自动生成用于复刻参考图的代码，使生成幻灯片与 RI 在视觉上保持一致。为评估 SlideCoder 在复杂幻灯片场景下的表现，我们提出新的 Slide Complexity Metric（SCM），并基于 SCM 构建具有不同难度层级的 Slide2Code benchmark。其次，我们提出 Color Gradients-based Segmentation algorithm（CGSeg），可将幻灯片图像有效分解为语义上有意义的区域。此外，我们提出 Layout-aware Prompt，将元素位置信息融入提示中，以增强 MLLM 对 slide layout 的理解。第三，我们提出基于 Hierarchical Retrieval-Augmented Generation（H-RAG）的代码生成方法，使用双层检索增强知识库（Cuconasu et al., 2024; Fan et al., 2024）显式提升 MLLMs 对 python-pptx 库的理解。高层的 Shape Type Knowledge Base（TS-KB）系统化地分类幻灯片元素，并用 python-pptx API 术语标准化描述；低层的 Operation Function Knowledge Base（OF-KB）则捕获 python-pptx 库函数的精确语法模式与调用范式。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_2_3",
+      "page": 2,
+      "index_on_page": 3,
+      "bbox": [
+        507.0,
+        181.0,
+        884.0,
+        309.0
+      ],
+      "text_en": "To further enhance the MLLM’s ability to generate high-quality slides, we build a PPTX reverseengineering tool to construct high quality training data for fine-tuning a 7B model SlideMaster based on Qwen-VL-7B (Bai et al., 2025), which can approaches the performance of the closed-sourced model GPT-4o (Achiam et al., 2023). Our contributions are summarized as follows:",
+      "text_zh": "为进一步增强 MLLM 生成高质量幻灯片的能力，我们构建了一个 PPTX 逆向工程工具，用于生成高质量训练数据，并基于 Qwen-VL-7B（Bai et al., 2025）微调 7B 模型 SlideMaster。该模型的性能接近闭源模型 GPT-4o（Achiam et al., 2023）。本文贡献总结如下：",
+      "kind": "body"
+    },
+    {
+      "pid": "p_2_4",
+      "page": 2,
+      "index_on_page": 4,
+      "bbox": [
+        509.0,
+        645.0,
+        665.0,
+        659.0
+      ],
+      "text_en": "2 Related Work",
+      "text_zh": "## 2 Related Work / 相关工作",
+      "kind": "body"
+    },
+    {
+      "pid": "p_2_5",
+      "page": 2,
+      "index_on_page": 5,
+      "bbox": [
+        507.0,
+        673.0,
+        870.0,
+        703.0
+      ],
+      "text_en": "2.1 Multimodal Large Language Models for Code Generation",
+      "text_zh": "### 2.1 Multimodal Large Language Models for Code Generation / 面向代码生成的多模态大语言模型",
+      "kind": "body"
+    },
+    {
+      "pid": "p_2_6",
+      "page": 2,
+      "index_on_page": 6,
+      "bbox": [
+        507.0,
+        712.0,
+        884.0,
+        921.0
+      ],
+      "text_en": "The multimodal large model demonstrates excellent capabilities in visually rich code generation scenarios, such as UI code generation (Xiao et al., 2024, 2025; Yun et al., 2024; Wan et al., 2024), SVG code generation (Rodriguez et al., 2025; Nishina and Matsui, 2024; Wu et al., 2024; Xing et al., 2024), and visually rich programming questions (Li et al., 2024; Zhang et al., 2024a; Ma et al., 2025). However, MLLMs are not yet capable of plug-and-play use across tasks and still produce subtle errors, therefore, some studies explore their code repair abilities (Yang et al., 2024; Yuan et al., 2024; Zhang et al., 2024b).",
+      "text_zh": "多模态大模型在视觉信息丰富的代码生成场景中展现出优秀能力，例如 UI 代码生成（Xiao et al., 2024, 2025; Yun et al., 2024; Wan et al., 2024）、SVG 代码生成（Rodriguez et al., 2025; Nishina and Matsui, 2024; Wu et al., 2024; Xing et al., 2024），以及视觉丰富的编程问题（Li et al., 2024; Zhang et al., 2024a; Ma et al., 2025）。然而，MLLMs 仍无法在各类任务中做到即插即用，并且仍会产生细微错误，因此一些研究开始探索其代码修复能力（Yang et al., 2024; Yuan et al., 2024; Zhang et al., 2024b）。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_1",
+      "page": 3,
+      "index_on_page": 1,
+      "bbox": [
+        112.0,
+        84.0,
+        450.0,
+        99.0
+      ],
+      "text_en": "2.2 Slide Generation and Understanding",
+      "text_zh": "### 2.2 Slide Generation and Understanding / 幻灯片生成与理解",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_2",
+      "page": 3,
+      "index_on_page": 2,
+      "bbox": [
+        112.0,
+        105.0,
+        489.0,
+        347.0
+      ],
+      "text_en": "Previous work on slide generation has predominantly focused on basic content extraction from input documents. With the recent advancements in large language models (Fu et al., 2022; Hu and Wan, 2014; Kan, 2007; Sefid and Wu, 2019), several studies have begun to explore LLM-based slide generation. For example, (Zheng et al., 2025) utilizes LLMs to generate slides based on pre-defined slide templates and user-provided text. (Ge et al., 2025) introduces the task of natural language (NL) to slide code generation, aiming to organize visual slide content through textual input. However, its use of coarse-grained natural language descriptions and a native agent design significantly limits the quality of the generated slides.",
+      "text_zh": "此前关于幻灯片生成的研究主要聚焦于从输入文档中进行基础内容抽取。随着大型语言模型的发展（Fu et al., 2022; Hu and Wan, 2014; Kan, 2007; Sefid and Wu, 2019），若干工作开始探索基于 LLM 的幻灯片生成。例如，Zheng et al.（2025）利用 LLMs 根据预定义幻灯片模板和用户提供文本生成幻灯片。Ge et al.（2025）提出 natural language（NL）to slide code generation 任务，旨在通过文本输入组织可视化幻灯片内容。然而，该方法依赖粗粒度自然语言描述和原生 agent 设计，显著限制了生成幻灯片的质量。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_3",
+      "page": 3,
+      "index_on_page": 3,
+      "bbox": [
+        112.0,
+        360.0,
+        352.0,
+        376.0
+      ],
+      "text_en": "3 Slide2Code Benchmark",
+      "text_zh": "## 3 Slide2Code Benchmark / Slide2Code 基准",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_4",
+      "page": 3,
+      "index_on_page": 4,
+      "bbox": [
+        112.0,
+        386.0,
+        489.0,
+        565.0
+      ],
+      "text_en": "We construct the Slide2Code benchmark to evaluate the performance of multimodal large language models (MLLMs) on the Reference Image (RI) to slide generation task. Each instance includes a reference slide image and its corresponding PPTX slide. Slide2Code enables comparison of MLLM backbones under varying complexity. §3.1 formally defines the task, §3.2 describes our unified complexity scoring system based on element quantity, diversity, and visual density, and §3.3 details data collection and sampling.",
+      "text_zh": "我们构建 Slide2Code benchmark，用于评估 Multimodal Large Language Models（MLLMs）在 Reference Image（RI）to slide generation 任务上的表现。每个样本包含一张参考幻灯片图像及其对应的 PPTX 幻灯片。Slide2Code 支持在不同复杂度下比较 MLLM backbone。§3.1 形式化定义任务，§3.2 描述我们基于元素数量、元素多样性和视觉密度构建的统一复杂度评分系统，§3.3 介绍数据收集与采样过程。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_5",
+      "page": 3,
+      "index_on_page": 5,
+      "bbox": [
+        112.0,
+        576.0,
+        294.0,
+        590.0
+      ],
+      "text_en": "3.1 Task Description",
+      "text_zh": "### 3.1 Task Description / 任务描述",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_6",
+      "page": 3,
+      "index_on_page": 6,
+      "bbox": [
+        112.0,
+        596.0,
+        489.0,
+        791.0
+      ],
+      "text_en": "This work addresses the task of Reference Image (RI) to slide generation, where the input is a slide’s reference image $I _ { 0 }$ and the goal is to generate Python code using the python-pptx library. Let $F _ { 0 }$ denote the original slide file corresponding to $I _ { 0 }$ . Given a generation framework G and Multimodal Large Language Models (MLLMs) M, the generated code $C _ { g } = G _ { M } ( I _ { 0 } )$ can be executed to obtain a new slide file $F _ { g } ,$ whose rendered image is denoted as $I _ { g }$ . As the original code $C _ { 0 }$ for $F _ { 0 }$ is unavailable, we assess the performance of G and M by comparing $( I _ { 0 } , F _ { 0 } )$ and $( I _ { g } , F _ { g } )$ .",
+      "text_zh": "本文研究 Reference Image（RI）to slide generation 任务：输入为幻灯片参考图 $I _ { 0 }$，目标是使用 python-pptx 库生成 Python 代码。设 $F _ { 0 }$ 表示与 $I _ { 0 }$ 对应的原始幻灯片文件。给定生成框架 G 和 Multimodal Large Language Models（MLLMs）M，生成代码 $C _ { g } = G _ { M } ( I _ { 0 } )$ 可执行得到新的幻灯片文件 $F _ { g } ,$，其渲染图记为 $I _ { g }$。由于 $F _ { 0 }$ 的原始代码 $C _ { 0 }$ 不可获得，我们通过比较 $( I _ { 0 } , F _ { 0 } )$ 与 $( I _ { g } , F _ { g } )$ 来评估 G 和 M 的性能。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_7",
+      "page": 3,
+      "index_on_page": 7,
+      "bbox": [
+        112.0,
+        803.0,
+        352.0,
+        818.0
+      ],
+      "text_en": "3.2 Slide Complexity Metric",
+      "text_zh": "### 3.2 Slide Complexity Metric / 幻灯片复杂度指标",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_8",
+      "page": 3,
+      "index_on_page": 8,
+      "bbox": [
+        112.0,
+        824.0,
+        490.0,
+        921.0
+      ],
+      "text_en": "To evaluate slide complexity, we propose a Tri-Metric Slide Complexity Metric (SCM) that integrates production difficulty and visual complexity. Due to the mismatch between visual appearance and construction effort, for example, inserting a visually complex image may require minimal operations. To adress this, we assess slides using: (1) element count, (2) element type count (e.g., textbox, placeholder), and (3) Element Coverage Ratio. The first two reflect operational cost, the third captures visual richness. Since reference complexity labels are not available, we evaluate the relative complexity of sample i within a collection $Y = \\{ 1 , 2 , 3 , . . . , N \\}$ .",
+      "text_zh": "为评估幻灯片复杂度，我们提出 Tri-Metric Slide Complexity Metric（SCM），将制作难度与视觉复杂度结合起来。视觉外观与构建工作量之间可能不匹配，例如插入一张视觉复杂的图片可能只需要很少操作。为解决这一问题，我们从三个方面评估幻灯片：（1）元素数量；（2）元素类型数量（例如 textbox、placeholder）；（3）Element Coverage Ratio。前两项反映操作成本，第三项刻画视觉丰富度。由于没有可用的参考复杂度标签，我们评估集合 $Y = \\{ 1 , 2 , 3 , . . . , N \\}$ 中样本 i 的相对复杂度。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_9",
+      "page": 3,
+      "index_on_page": 9,
+      "bbox": [
+        507.0,
+        216.0,
+        884.0,
+        313.0
+      ],
+      "text_en": "Let $c _ { i }$ be the number of elements and $e _ { i }$ the number of distinct element types in sample i. The Element Coverage Ratio $v _ { i }$ is the proportion of activated color grids to total grids in the image of sample i, computed via the gradient-based segmentation algorithm CGSeg (see §4.1 for details).",
+      "text_zh": "设 $c _ { i }$ 为样本 i 的元素数量，$e _ { i }$ 为其不同元素类型的数量。Element Coverage Ratio $v _ { i }$ 表示样本 i 图像中激活颜色网格占总网格的比例，该比例通过基于梯度的分割算法 CGSeg 计算得到（详见 §4.1）。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_10",
+      "page": 3,
+      "index_on_page": 10,
+      "bbox": [
+        507.0,
+        316.0,
+        884.0,
+        514.0
+      ],
+      "text_en": "Each raw dimension score $x _ { i } \\in \\{ c _ { i } , e _ { i } , v _ { i } \\}$ is normalized as $\\begin{array} { r } { \\tilde { x } _ { i } = \\sigma \\left( \\frac { x _ { i } - \\mu } { \\sqrt { \\sigma ^ { 2 } } + \\epsilon } \\right) } \\end{array}$ , where $\\mu$ and $\\sigma ^ { 2 }$ denote the mean and variance over all samples in set $Y _ { \\pm }$ , respectively. Here, $\\sigma ( \\cdot )$ is the sigmoid function (Han and Moraga, 1995), and ϵ is a small constant for numerical stability. The final complexity score for slide i is computed via a weighted aggregation: $z _ { i } = \\alpha \\cdot \\tilde { c } _ { i } + \\beta \\cdot \\tilde { e } _ { i } + \\gamma \\cdot \\tilde { v } _ { i }$ , where $\\alpha + \\beta + \\gamma = 1$ and the weights $\\alpha , \\beta ,$ γ reflect the importance of production effort and visual complexity. This metric shows a strong correlation with human judgment, as detailed in Section §5.4.",
+      "text_zh": "每个原始维度分数 $x _ { i } \\in \\{ c _ { i } , e _ { i } , v _ { i } \\}$ 按如下方式归一化：$\begin{array} { r } { \tilde { x } _ { i } = \\sigma \\left( \frac { x _ { i } - \\mu } { \\sqrt { \\sigma ^ { 2 } } + \\epsilon } \right) } \\end{array}$，其中 $\\mu$ 和 $\\sigma ^ { 2 }$ 分别表示集合 $Y _ { \\pm }$ 上所有样本的均值和方差。这里，$\\sigma ( \\cdot )$ 为 sigmoid 函数（Han and Moraga, 1995），ϵ 是用于数值稳定性的小常数。幻灯片 i 的最终复杂度得分通过加权聚合计算：$z _ { i } = \u0007lpha \\cdot \tilde { c } _ { i } + \beta \\cdot \tilde { e } _ { i } + \\gamma \\cdot \tilde { v } _ { i }$，其中 $\u0007lpha + \beta + \\gamma = 1$，权重 $\u0007lpha , \beta ,$ γ 反映制作工作量与视觉复杂度的重要性。该指标与人类判断高度相关，详见 §5.4。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_11",
+      "page": 3,
+      "index_on_page": 11,
+      "bbox": [
+        507.0,
+        536.0,
+        678.0,
+        550.0
+      ],
+      "text_en": "3.3 Data Collection",
+      "text_zh": "### 3.3 Data Collection / 数据收集",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_12",
+      "page": 3,
+      "index_on_page": 12,
+      "bbox": [
+        507.0,
+        564.0,
+        884.0,
+        803.0
+      ],
+      "text_en": "To construct a comprehensive benchmark that captures diverse slide characteristics, we randomly sample approximately 32,000 Zenodo10k (Zheng et al., 2025) slide instances, the largest publicly available slide dataset, to construct the slide set Y as described in §3.2. To enhance diversity and allow comparative analysis, we additionally incorporate SLIDEBENCH samples in Y . This unified set is then used to calculate the normalized complexity scores z for all slides. KMeans algorithm is used to obtain three clusters, whose cluster centers are sorted in order of z to define the simple, medium, and complex levels. From each cluster, we randomly select 100 representative samples from $Y$ to form the final Slide2Code benchmark.",
+      "text_zh": "为构建能够覆盖多样幻灯片特征的综合 benchmark，我们从 Zenodo10k（Zheng et al., 2025）这一最大公开幻灯片数据集中随机采样约 32,000 个幻灯片实例，作为 §3.2 所述的幻灯片集合 Y。为提升多样性并支持对比分析，我们还将 SLIDEBENCH 样本纳入 Y。随后使用该统一集合计算所有幻灯片的归一化复杂度得分 z。我们使用 KMeans 算法得到三个簇，并按 z 对簇中心排序，从而定义 simple、medium 和 complex 三个等级。最后，从每个簇中随机选择 100 个代表性样本，组成最终的 Slide2Code benchmark。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_13",
+      "page": 3,
+      "index_on_page": 13,
+      "bbox": [
+        507.0,
+        808.0,
+        885.0,
+        921.0
+      ],
+      "text_en": "Figure 2 shows that both Zenodo10k and SLIDEBENCH contain a significantly larger proportion of simple and medium slides. In contrast, Slide2Code exhibits a more balanced composition across all three levels, allowing a more equitable evaluation of slide generation models under varying structural and visual complexities.",
+      "text_zh": "图 2 显示，Zenodo10k 和 SLIDEBENCH 中 simple 与 medium 幻灯片的比例明显更高。相比之下，Slide2Code 在三个等级上的组成更均衡，因此能够更公平地评估幻灯片生成模型在不同结构与视觉复杂度下的表现。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_1",
+      "page": 4,
+      "index_on_page": 1,
+      "bbox": [
+        112.0,
+        262.0,
+        260.0,
+        279.0
+      ],
+      "text_en": "4 Methodology",
+      "text_zh": "## 4 Methodology / 方法",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_2",
+      "page": 4,
+      "index_on_page": 2,
+      "bbox": [
+        112.0,
+        290.0,
+        489.0,
+        580.0
+      ],
+      "text_en": "In this section, we introduce SlideCoder, a unified end-to-end framework for generating Pythonexecutable slide code from reference images (RIs). We assume a scenario where a user provides a design layout (\"Design \") and embedded visual elements such as pictures or background images (\"Pictures \"). SlideCoder comprises three core modules. First, a Color Gradients-based Segmentation (CGSeg) algorithm segments the input Design into semantically meaningful regions. Second, a Hierarchical Retrieval-Augmented Code Generation module, consisting of three collaborative agents Describer, Coder, and Assembler, generates the slide code. Third, a Layout-aware Prompt mechanism enhances the Assembler agent to ensure spatial consistency and syntactic correctness. Finally, based on this framework, we fine-tune a 7B open-source model, named SlideMaster.",
+      "text_zh": "本节介绍 SlideCoder：一个统一的端到端框架，可根据 reference images（RIs）生成可执行的 Python 幻灯片代码。我们假设用户提供设计 layout（“Design”）以及嵌入的视觉元素，如图片或背景图（“Pictures”）。SlideCoder 包含三个核心模块。首先，Color Gradients-based Segmentation（CGSeg）算法将输入 Design 分割为语义上有意义的区域。其次，Hierarchical Retrieval-Augmented Code Generation 模块由三个协作 agent——Describer、Coder 和 Assembler——组成，用于生成幻灯片代码。第三，Layout-aware Prompt 机制增强 Assembler agent，以确保空间一致性与语法正确性。最后，基于该框架，我们微调了一个名为 SlideMaster 的 7B 开源模型。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_3",
+      "page": 4,
+      "index_on_page": 3,
+      "bbox": [
+        112.0,
+        593.0,
+        443.0,
+        608.0
+      ],
+      "text_en": "4.1 Color Gradient-based Segmentation",
+      "text_zh": "### 4.1 Color Gradient-based Segmentation / 基于颜色梯度的分割",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_4",
+      "page": 4,
+      "index_on_page": 4,
+      "bbox": [
+        112.0,
+        615.0,
+        489.0,
+        921.0
+      ],
+      "text_en": "To reduce the difficulty of MLLM in understanding complex slide design, we proposed CGSeg, a recursive color gradient-based segmentation algorithm to divide slide design into blocks. As shown in Algorithm 1, CGSeg starts by dividing the input image (Figure 4a) into a grid and computing the Sobel magnitude for each block to measure the intensity of the color gradient (lines 4–5). Blocks with gradient magnitudes significantly higher than the median are marked as activated block (lines 6–14), as visualized in Figure 4b. To group visually coherent regions, CGSeg applies a flood-fill (Burtsev and Kuzmin, 1993) operation to the binary activation mask (line 15), identifying connected regions corresponding to sub-images (line 16), as shown in Figure 4c. These sub-images are further segmented recursively to ensure a hierarchical decomposition of the image $I _ { m }$ , along with the corresponding positional information $p _ { m }$ (lines 1–3 and 17–23),",
+      "text_zh": "为降低 MLLM 理解复杂幻灯片设计的难度，我们提出 CGSeg：一种递归的 color gradient-based segmentation 算法，用于将幻灯片设计划分为块。如算法 1 所示，CGSeg 首先将输入图像（图 4a）划分为网格，并计算每个块的 Sobel 幅值以衡量颜色梯度强度（第 4–5 行）。梯度幅值显著高于中位数的块被标记为 activated block（第 6–14 行），可视化结果见图 4b。为聚合视觉上连贯的区域，CGSeg 对二值激活掩码应用 flood-fill（Burtsev and Kuzmin, 1993）操作（第 15 行），识别与子图像对应的连通区域（第 16 行），如图 4c 所示。这些子图像随后会被递归地进一步分割，以确保图像 $I _ { m }$ 及其对应位置信息 $p _ { m }$ 的层次化分解（第 1–3 行和第 17–23 行），",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_5",
+      "page": 4,
+      "index_on_page": 5,
+      "bbox": [
+        507.0,
+        467.0,
+        882.0,
+        546.0
+      ],
+      "text_en": "with the final segmentation result shown in Figure 4d. This recursive structure allows CGSeg to adaptively refine segment granularity based on local visual complexity, which is crucial for handling slides with heterogeneous layout densities.",
+      "text_zh": "最终分割结果如图 4d 所示。该递归结构使 CGSeg 能够根据局部视觉复杂度自适应细化分割粒度，这对于处理 layout 密度不均的幻灯片尤为关键。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_6",
+      "page": 4,
+      "index_on_page": 6,
+      "bbox": [
+        507.0,
+        558.0,
+        870.0,
+        589.0
+      ],
+      "text_en": "4.2 Hierarchical Retrieval-Augmented Code Generation Module",
+      "text_zh": "### 4.2 Hierarchical Retrieval-Augmented Code Generation Module / 层次化检索增强代码生成模块",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_7",
+      "page": 4,
+      "index_on_page": 7,
+      "bbox": [
+        507.0,
+        596.0,
+        721.0,
+        609.0
+      ],
+      "text_en": "4.2.1 Generation Process",
+      "text_zh": "#### 4.2.1 Generation Process / 生成流程",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_8",
+      "page": 4,
+      "index_on_page": 8,
+      "bbox": [
+        505.0,
+        614.0,
+        884.0,
+        888.0
+      ],
+      "text_en": "We design three collaborative MLLM agents whose code generation processes are augmented by H-RAG. Describer is responsible for generating a global Design description (Overall Description) as well as block descriptions (Block Description) for each segmented blocks. Based on block and their associated block description, Coder produces corresponding code snippets. Subsequently, Assembler generates the complete slide code by layoutaware prompt, which will be elaborated in §4.3, along with the Pictures provided. Executing this code produces a slide that structurally and visually aligns with the Reference Image(RI). If the generated code is not executable Assembler applies a self-refinement mechanism to correct syntax errors, where errors serves as the feedback to prompt the MLLM to re-generate the code.",
+      "text_zh": "我们设计了三个协作式 MLLM agents，其代码生成过程由 H-RAG 增强。Describer 负责生成全局 Design 描述（Overall Description），以及每个分割块的块描述（Block Description）。基于块及其对应的 block description，Coder 生成相应代码片段。随后，Assembler 结合 §4.3 将详述的 layout-aware prompt 与提供的 Pictures，生成完整幻灯片代码。执行该代码后得到的幻灯片在结构和视觉上与 Reference Image（RI）对齐。若生成代码不可执行，Assembler 会使用 self-refinement 机制修正语法错误，将错误信息作为反馈提示 MLLM 重新生成代码。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_9",
+      "page": 4,
+      "index_on_page": 9,
+      "bbox": [
+        507.0,
+        889.0,
+        882.0,
+        921.0
+      ],
+      "text_en": "Beyond the above inputs, each agent draws knowledge from distinct bases according to its role.",
+      "text_zh": "除上述输入外，每个 agent 还会根据自身角色从不同知识库中获取知识。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_1",
+      "page": 5,
+      "index_on_page": 1,
+      "bbox": [
+        112.0,
+        439.0,
+        485.0,
+        470.0
+      ],
+      "text_en": "The form and origin of the knowledge used in each agent’s prompt are detailed in §4.2.2.",
+      "text_zh": "各 agent 提示中所用知识的形式与来源详见 §4.2.2。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_2",
+      "page": 5,
+      "index_on_page": 2,
+      "bbox": [
+        112.0,
+        482.0,
+        445.0,
+        513.0
+      ],
+      "text_en": "4.2.2 Hierarchical Retrieval-Augmented Generation",
+      "text_zh": "#### 4.2.2 Hierarchical Retrieval-Augmented Generation / 层次化检索增强生成",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_3",
+      "page": 5,
+      "index_on_page": 3,
+      "bbox": [
+        112.0,
+        518.0,
+        487.0,
+        694.0
+      ],
+      "text_en": "Hierarchical Retrieval-Augmented Generation(H-RAG) comprises a Shape Type Knowledge Base and an Operation Function Knowledge Base. The former contains descriptions of objects from the python-pptx documentation, used in Describer to guide standardized description generation. For example, in “This autoshape includes a textbox...”, both terms are object names from the documentation. The latter includes full syntax specifications (e.g., parameters, return values, etc.). Appendix F details their structure.",
+      "text_zh": "Hierarchical Retrieval-Augmented Generation（H-RAG）包含 Shape Type Knowledge Base 和 Operation Function Knowledge Base。前者包含来自 python-pptx 文档的对象描述，在 Describer 中用于引导生成标准化描述。例如，在“This autoshape includes a textbox...”中，autoshape 和 textbox 都是文档中的对象名称。后者包含完整的语法规范，例如参数、返回值等。附录 F 详细说明了它们的结构。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_4",
+      "page": 5,
+      "index_on_page": 4,
+      "bbox": [
+        112.0,
+        696.0,
+        487.0,
+        824.0
+      ],
+      "text_en": "We employ BGE M3-Embedding (Chen et al., 2024) to embed entries and build a vector-based retrieval database. For a prompt $p ,$ its vector $q _ { p }$ is computed, and cosine similarity $\\cos ( q _ { p } , k _ { i } )$ is used to match $k _ { i }$ . The top-k relevant entries are inserted into $p .$ Given the size of the Shape Type Knowledge Base, all entries are included in Describer to ensure complete type coverage.",
+      "text_zh": "我们使用 BGE M3-Embedding（Chen et al., 2024）对条目进行嵌入，并构建基于向量的检索数据库。对于提示 $p ,$，计算其向量 $q _ { p }$，并使用余弦相似度 $\\cos ( q _ { p } , k _ { i } )$ 匹配 $k _ { i }$。最相关的 top-k 条目会被插入 $p .$。鉴于 Shape Type Knowledge Base 的规模，Describer 会包含所有条目，以保证完整的类型覆盖。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_5",
+      "page": 5,
+      "index_on_page": 5,
+      "bbox": [
+        112.0,
+        825.0,
+        487.0,
+        921.0
+      ],
+      "text_en": "In the hierarchical pipeline, agents collaborate progressively. Describer retrieves object types from the Shape Type Knowledge Base to identify elements in block images and output standardized descriptions. Coder uses these to query the Operation Function Knowledge Base and generate code snippets. Assembler uses these snippets to retrieve full syntax patterns and generate executable code.",
+      "text_zh": "在层次化流水线中，agents 逐步协作。Describer 从 Shape Type Knowledge Base 检索对象类型，以识别块图像中的元素并输出标准化描述。Coder 使用这些描述查询 Operation Function Knowledge Base 并生成代码片段。Assembler 则利用这些代码片段检索完整语法模式，并生成可执行代码。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_6",
+      "page": 5,
+      "index_on_page": 6,
+      "bbox": [
+        507.0,
+        482.0,
+        729.0,
+        498.0
+      ],
+      "text_en": "4.3 Layout-aware Prompt",
+      "text_zh": "### 4.3 Layout-aware Prompt / 布局感知提示",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_7",
+      "page": 5,
+      "index_on_page": 7,
+      "bbox": [
+        505.0,
+        502.0,
+        882.0,
+        631.0
+      ],
+      "text_en": "After Coder completes the generation of code snippets for blocks, Assembler is applied to assemble these code snippets for generating the final slide in an accurate manner. The assembly prompt needs to meet the following requirements: (1) ensure that each block appears in the correct position in the final slide; (2) avoid syntax errors in the merged code and ensure code context consistency.",
+      "text_zh": "Coder 完成各块代码片段生成后，Assembler 会将这些代码片段准确地组装为最终幻灯片。组装提示需要满足以下要求：（1）确保每个块在最终幻灯片中出现在正确位置；（2）避免合并代码中的语法错误，并保证代码上下文一致。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_8",
+      "page": 5,
+      "index_on_page": 8,
+      "bbox": [
+        505.0,
+        632.0,
+        884.0,
+        922.0
+      ],
+      "text_en": "To achieve above goals, layout-aware prompt injects the layout position using python-pptx standard positioning units (inches) to ensure the position correctness and retrieve the grammar <Grammar> from Knowledge Base to avoid syntax errors and code conflicts. Since the resolution of the Design differs from the actual slide layout size, we apply proportional scaling to the Position (<x, y, w, h>) extracted from Color Gradients-based Segmentation (CGSeg) algorithm to map it onto the slide coordinates, denoted as <Position\\*>. Subsequently, the reference image design <Design>, global body description <Overall description.>, partial codes <Code Snippets> from Coder, layout representation <Position\\*>, and syntactic patterns <Grammar> retrieved from the Hierarchical Retrieval-Augmented Generation(H-RAG) knowledge base are integrated into a predefined prompt template to construct the final layout-aware prompt (see Appendix E for details).",
+      "text_zh": "为实现上述目标，layout-aware prompt 使用 python-pptx 标准定位单位（英寸）注入 layout 位置信息，以确保位置正确；同时从知识库中检索语法 <Grammar>，以避免语法错误和代码冲突。由于 Design 的分辨率与实际幻灯片 layout 尺寸不同，我们对 Color Gradients-based Segmentation（CGSeg）算法提取的位置（<x, y, w, h>）进行比例缩放，将其映射到幻灯片坐标，记为 <Position*>。随后，将参考图设计 <Design>、全局正文描述 <Overall description.>、Coder 生成的局部代码 <Code Snippets>、layout 表示 <Position*>，以及从 Hierarchical Retrieval-Augmented Generation（H-RAG）知识库检索到的语法模式 <Grammar>，一起整合到预定义提示模板中，构成最终的 layout-aware prompt（详见附录 E）。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_1",
+      "page": 6,
+      "index_on_page": 1,
+      "bbox": [
+        112.0,
+        128.0,
+        257.0,
+        142.0
+      ],
+      "text_en": "4.4 SlideMaster",
+      "text_zh": "### 4.4 SlideMaster",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_2",
+      "page": 6,
+      "index_on_page": 2,
+      "bbox": [
+        112.0,
+        149.0,
+        489.0,
+        361.0
+      ],
+      "text_en": "Using the SLIDESBENCH training set, we construct a dataset of (RI, instruction, program) triplets. The reverse-engineering tool proposed by (Ge et al., 2025) produces labels (Python code) for only a limited set of slide styles, resulting in suboptimal training data quality. To mitigate this, we develop a new reverse-engineering tool capable of handling a broader spectrum of slide styles, thereby enhancing label quality. The effectiveness of this tool is analyzed in §5.3. We fine-tune our model, Slide-Master, based on Qwen2.5-VL-7B-Instruct (Bai et al., 2025), using LoRA (Hu et al., 2022). Full configuration details are provided in Appendix C.",
+      "text_zh": "基于 SLIDESBENCH 训练集，我们构建了由（RI、instruction、program）三元组组成的数据集。Ge et al.（2025）提出的逆向工程工具只能为有限的幻灯片风格生成标签（Python 代码），导致训练数据质量不理想。为缓解这一问题，我们开发了新的逆向工程工具，可处理更广泛的幻灯片风格，从而提升标签质量。该工具的有效性在 §5.3 中分析。我们基于 Qwen2.5-VL-7B-Instruct（Bai et al., 2025），使用 LoRA（Hu et al., 2022）微调模型 SlideMaster。完整配置见附录 C。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_3",
+      "page": 6,
+      "index_on_page": 3,
+      "bbox": [
+        112.0,
+        373.0,
+        364.0,
+        388.0
+      ],
+      "text_en": "5 Experiments and Results",
+      "text_zh": "## 5 Experiments and Results / 实验与结果",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_4",
+      "page": 6,
+      "index_on_page": 4,
+      "bbox": [
+        112.0,
+        400.0,
+        317.0,
+        416.0
+      ],
+      "text_en": "5.1 Experimental Setup",
+      "text_zh": "### 5.1 Experimental Setup / 实验设置",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_5",
+      "page": 6,
+      "index_on_page": 5,
+      "bbox": [
+        112.0,
+        420.0,
+        489.0,
+        709.0
+      ],
+      "text_en": "Model. To evaluate the performance of the Slide-Coder, we employ state-of-the-art (SOTA) models, including GPT-4o (Achiam et al., 2023), Gemini-2.0-flash (Google, 2025), and SlideMaster, which is a fine-tuned model based on the open-source Qwen2.5-VL-7B-Instruct (Bai et al., 2025). The SOTA models are accessed via their official APIs, with GPT-4o using version 20241120 and Gemini-2.0-flash accessed in May 2025. For both models, the maximum token limit and temperature are set to 4096 and 0, respectively. Same as (Ge et al., 2025), we allow both Coder and Assembler agents up to three self-refinement attempt. The first successful attempt is taken as the output. If Coder fails to generate executable code after the maximum number of attempts, the corresponding block is discarded. If Assembler fails, the corresponding sample is marked as execution failure.",
+      "text_zh": "**Model.** 为评估 SlideCoder 的性能，我们使用多个 state-of-the-art（SOTA）模型，包括 GPT-4o（Achiam et al., 2023）、Gemini-2.0-flash（Google, 2025）和 SlideMaster；其中 SlideMaster 是基于开源 Qwen2.5-VL-7B-Instruct（Bai et al., 2025）微调得到的模型。SOTA 模型通过官方 API 调用，GPT-4o 使用 20241120 版本，Gemini-2.0-flash 于 2025 年 5 月访问。两个模型的最大 token 限制和 temperature 分别设为 4096 和 0。与 Ge et al.（2025）相同，我们允许 Coder 和 Assembler agents 最多进行三次 self-refinement，取第一次成功尝试作为输出。若 Coder 在最大尝试次数后仍无法生成可执行代码，则丢弃对应块；若 Assembler 失败，则将对应样本标记为执行失败。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_6",
+      "page": 6,
+      "index_on_page": 6,
+      "bbox": [
+        112.0,
+        712.0,
+        489.0,
+        921.0
+      ],
+      "text_en": "Metric. To comprehensively assess generation quality, we adopt four metrics, using the notations defined in §3.1. (1) Global Visual Metrics, including CLIP (Hessel et al., 2021) and SSIM (Nilsson and Akenine-Möller, 2020) scores computed between the original image $I _ { 0 }$ and the generated image $I _ { g } ;$ (2) Local Structural Metrics, which compare the original and generated slide files $F _ { 0 }$ and $F _ { g }$ in terms of content similarity and position similarity, following (Ge et al., 2025); (3) Execution, defined as the success rate of executing $C _ { g }$ without errors; and (4) Overall Score, calculated as the average of all metric values across all samples, with failed executions assigned a score of zero.",
+      "text_zh": "**Metric.** 为全面评估生成质量，我们采用四类指标，并使用 §3.1 中定义的记号。（1）Global Visual Metrics，包括在原始图像 $I _ { 0 }$ 与生成图像 $I _ { g } ;$ 之间计算的 CLIP（Hessel et al., 2021）和 SSIM（Nilsson and Akenine-Möller, 2020）得分；（2）Local Structural Metrics，按照 Ge et al.（2025）的方法，从内容相似度和位置相似度两方面比较原始与生成幻灯片文件 $F _ { 0 }$ 和 $F _ { g }$；（3）Execution，定义为无错误执行 $C _ { g }$ 的成功率；（4）Overall Score，计算所有样本上各项指标值的平均，执行失败样本记为 0 分。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_7",
+      "page": 6,
+      "index_on_page": 7,
+      "bbox": [
+        507.0,
+        111.0,
+        821.0,
+        127.0
+      ],
+      "text_en": "5.2 Quantitative Results and Analysis",
+      "text_zh": "### 5.2 Quantitative Results and Analysis / 定量结果与分析",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_8",
+      "page": 6,
+      "index_on_page": 8,
+      "bbox": [
+        507.0,
+        131.0,
+        884.0,
+        374.0
+      ],
+      "text_en": "The upper part of Table 1 presents the performance of different frameworks on our proposed benchmark, evaluated using the metrics introduced in Section 3.1. The results show that SlideCoder consistently achieves the best performance across all difficulty levels. Specifically, its overall score surpasses the best baseline by 40.5, 34.0, and 29.9 points on the simple, medium, and complex levels, respectively, demonstrating the overall superiority of our framework. For execution success rate, SlideCoder outperforms the best baseline by 38%, 32%, and 27% across the three difficulty levels, indicating that the proposed H-RAG and CGSeg mechanisms significantly enhance model performance and reduce task difficulty.",
+      "text_zh": "表 1 上半部分展示了不同框架在我们提出的 benchmark 上的表现，并使用 §3.1 中介绍的指标进行评估。结果显示，SlideCoder 在所有难度层级上都稳定取得最佳性能。具体而言，在 simple、medium 和 complex 三个等级上，其 overall score 分别超过最佳基线 40.5、34.0 和 29.9 分，体现出框架整体优势。在执行成功率方面，SlideCoder 在三个难度等级上分别超过最佳基线 38%、32% 和 27%，说明所提出的 H-RAG 与 CGSeg 机制显著提升了模型性能并降低了任务难度。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_9",
+      "page": 6,
+      "index_on_page": 9,
+      "bbox": [
+        507.0,
+        374.0,
+        884.0,
+        565.0
+      ],
+      "text_en": "Moreover, SlideCoder outperforms all baselines in both Local Structural Metrics and Global Visual Metrics, confirming its strong fidelity in preserving both the structural layout and visual appearance of the original slides. The stepwise decline in Slide-Coder’s overall score across increasing difficulty levels further indicates its ability to leverage visual and structural cues from the input slides. In contrast, baseline models relying solely on natural language descriptions exhibit weak sensitivity to slide complexity, failing to reflect the difficulty hierarchy in their overall scores.",
+      "text_zh": "此外，SlideCoder 在 Local Structural Metrics 和 Global Visual Metrics 上均优于所有基线，证明其在保持原始幻灯片结构 layout 与视觉外观方面具有较强保真度。随着难度等级提升，SlideCoder 的 overall score 逐步下降，这也说明它能够利用输入幻灯片中的视觉与结构线索。相比之下，仅依赖自然语言描述的基线模型对幻灯片复杂度不敏感，其 overall score 未能体现难度层级。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_10",
+      "page": 6,
+      "index_on_page": 10,
+      "bbox": [
+        507.0,
+        567.0,
+        882.0,
+        712.0
+      ],
+      "text_en": "On the SLIDESBENCH dataset (as shown in the lower part of Table 1), SlideCoder also surpasses all baselines across all metrics, with an overall score of 78.8 when using GPT-4o as the backbone, representing a 11.9 improvement over the best-performing baseline. Notably, the opensource fine-tuned model SlideMaster also demonstrates competitive performance, outperforming the best GPT-4o-based baseline on both datasets.",
+      "text_zh": "在 SLIDESBENCH 数据集上（见表 1 下半部分），以 GPT-4o 为 backbone 的 SlideCoder 同样在所有指标上超过所有基线，overall score 达到 78.8，比最佳基线提升 11.9。值得注意的是，开源微调模型 SlideMaster 也展现出有竞争力的表现，并在两个数据集上都超过了基于 GPT-4o 的最佳基线。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_11",
+      "page": 6,
+      "index_on_page": 11,
+      "bbox": [
+        507.0,
+        722.0,
+        727.0,
+        738.0
+      ],
+      "text_en": "5.3 Reverse Tool Analysis",
+      "text_zh": "### 5.3 Reverse Tool Analysis / 逆向工具分析",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_12",
+      "page": 6,
+      "index_on_page": 12,
+      "bbox": [
+        507.0,
+        744.0,
+        882.0,
+        888.0
+      ],
+      "text_en": "Table 2 summarizes the supported object types and corresponding styles in our proposed reverse engineering tool. Our tool supports 10 commonly used object types and 44 distinct object styles, whereas Autopresent (Ge et al., 2025) only supports 5 object types and 16 styles. Detailed comparisons can be found in Appendix B. To quantitatively assess the reverse engineering capabilities of both tools, we adopt two evaluation metrics:",
+      "text_zh": "表 2 总结了我们提出的逆向工程工具支持的对象类型及对应样式。我们的工具支持 10 种常用对象类型和 44 种不同对象样式，而 AutoPresent（Ge et al., 2025）仅支持 5 种对象类型和 16 种样式。详细对比见附录 B。为定量评估两个工具的逆向工程能力，我们采用两个评价指标：",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_13",
+      "page": 6,
+      "index_on_page": 13,
+      "bbox": [
+        507.0,
+        889.0,
+        882.0,
+        921.0
+      ],
+      "text_en": "Reconstruction Ratio: This metric calculates the ratio between the number of shapes in the slide reconstructed from the reverse-engineered code and the original slide. Our tool achieves a reconstruction ratio of 90.38%, significantly outperforming (Ge et al., 2025), which only reaches 65.67%. This demonstrates the broader object type coverage enabled by our tool.",
+      "text_zh": "**Reconstruction Ratio.** 该指标计算由逆向工程代码重建出的幻灯片形状数量与原始幻灯片形状数量之间的比例。我们的工具达到 90.38% 的重建比例，显著高于 Ge et al.（2025）的 65.67%。这说明我们的工具覆盖了更广泛的对象类型。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_7_1",
+      "page": 7,
+      "index_on_page": 1,
+      "bbox": [
+        112.0,
+        808.0,
+        489.0,
+        923.0
+      ],
+      "text_en": "CLIP Score: Our method achieves a CLIP score (Hessel et al., 2021) of 88.66%, whereas Autopresent (Ge et al., 2025) only achieves 69.87%. The higher score indicates that our reverseengineered slides more accurately preserve the visual and stylistic details of the original, owing to the broader support for object types and styles.",
+      "text_zh": "**CLIP Score.** 我们的方法达到 88.66% 的 CLIP score（Hessel et al., 2021），而 AutoPresent（Ge et al., 2025）仅为 69.87%。更高的得分表明，由于支持更广泛的对象类型和样式，我们逆向工程得到的幻灯片能更准确地保留原始幻灯片的视觉与风格细节。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_7_2",
+      "page": 7,
+      "index_on_page": 2,
+      "bbox": [
+        507.0,
+        505.0,
+        818.0,
+        521.0
+      ],
+      "text_en": "5.4 Slide Complexity Metric Analysis",
+      "text_zh": "### 5.4 Slide Complexity Metric Analysis / Slide Complexity Metric 分析",
+      "kind": "body"
+    },
+    {
+      "pid": "p_7_3",
+      "page": 7,
+      "index_on_page": 3,
+      "bbox": [
+        507.0,
+        532.0,
+        884.0,
+        741.0
+      ],
+      "text_en": "To evaluate the effectiveness of the proposed Slide Complexity Metric (SCM), we conducted a human subject study. A total of 100 samples were randomly selected from the Slide2Code benchmark for evaluation. Four doctoral students were recruited as annotators, each assigned 50 slides to assess. The annotators were instructed to score each slide from the perspective of three dimensions: the number of shapes, the diversity of shape types, and the level of element coverage. The scoring range was 0–100, following the protocol in Appendix D. Each slide was rated independently by two annotators, and the final score was their average.",
+      "text_zh": "为评估所提出 Slide Complexity Metric（SCM）的有效性，我们开展了人工被试研究。从 Slide2Code benchmark 中随机选取 100 个样本用于评估。我们招募了四名博士生作为标注者，每人分配 50 张幻灯片进行评估。标注者需从三个维度为每张幻灯片打分：形状数量、形状类型多样性和元素覆盖程度。评分范围为 0–100，协议见附录 D。每张幻灯片由两名标注者独立评分，最终分数取二者平均。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_7_4",
+      "page": 7,
+      "index_on_page": 4,
+      "bbox": [
+        507.0,
+        744.0,
+        885.0,
+        921.0
+      ],
+      "text_en": "To assess the alignment between SCM and human perception, we first compute the Pearson correlation coefficient (Cohen et al., 2009) between the SCM complexity scores and the averaged human scores. The result is $r = 0 . 8 7 3$ with a p-value of $2 . 7 7 6 \\times 1 0 ^ { - 3 2 }$ , indicating a strong and statistically significant correlation. Additionally, we calculated the intraclass correlation coefficient (Koo and Li, 2016) between the SCM scores and each individual annotator’s score to assess consistency. The ICC result is 0.726 with a p-value of $1 . 1 8 6 \\times 1 0 ^ { - 3 1 }$ , demonstrating substantial agreement between SCM and human evaluations. These results confirm that SCM is a reliable and objective metric aligned with human judgment of slide complexity.",
+      "text_zh": "为评估 SCM 与人类感知的一致性，我们首先计算 SCM 复杂度得分与人类平均得分之间的 Pearson 相关系数（Cohen et al., 2009）。结果为 $r = 0 . 8 7 3$，p-value 为 $2 . 7 7 6 \times 1 0 ^ { - 3 2 }$，表明二者存在强且具有统计显著性的相关性。此外，我们计算了 SCM 分数与每位标注者分数之间的组内相关系数（ICC）（Koo and Li, 2016），用于评估一致性。ICC 为 0.726，p-value 为 $1 . 1 8 6 \times 1 0 ^ { - 3 1 }$，说明 SCM 与人工评估之间具有较高一致性。这些结果证明 SCM 是一个可靠且客观的指标，并与人类对幻灯片复杂度的判断一致。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_8_1",
+      "page": 8,
+      "index_on_page": 1,
+      "bbox": [
+        112.0,
+        407.0,
+        280.0,
+        422.0
+      ],
+      "text_en": "5.5 Ablation Study",
+      "text_zh": "### 5.5 Ablation Study / 消融研究",
+      "kind": "body"
+    },
+    {
+      "pid": "p_8_2",
+      "page": 8,
+      "index_on_page": 2,
+      "bbox": [
+        112.0,
+        680.0,
+        489.0,
+        921.0
+      ],
+      "text_en": "We design three ablation settings to validate the effectiveness of different components in our framework: (1) w/o Layout, removes the layout-aware prompt; (2) w/o CGSeg, disables both the CGSeg mechanism and the layout-aware prompt; (3) w/o H-RAG, removes the <Grammar> content from all prompts.(4) Native setting, which removes H-RAG on top of the w/o CGSeg setting. Detailed descriptions are provided in Appendix A.1. We randomly sample 33 instances from each difficulty level, resulting in a total of 99 samples, and perform inference using GPT-4o. The overall results are reported in Table 3, with detailed metric result provided in Appendix A.2. After removing each component, both execution rate and overall score",
+      "text_zh": "我们设计了三种消融设置来验证框架中不同组件的有效性：（1）w/o Layout，移除 layout-aware prompt；（2）w/o CGSeg，同时移除 CGSeg 机制和 layout-aware prompt；（3）w/o H-RAG，从所有提示中移除 <Grammar> 内容。（4）Native setting，在 w/o CGSeg 设置基础上进一步移除 H-RAG。详细描述见附录 A.1。我们从每个难度等级随机采样 33 个实例，共 99 个样本，并使用 GPT-4o 进行推理。总体结果见表 3，详细指标结果见附录 A.2。移除任一组件后，执行率和 overall score 都",
+      "kind": "body"
+    },
+    {
+      "pid": "p_8_3",
+      "page": 8,
+      "index_on_page": 3,
+      "bbox": [
+        507.0,
+        332.0,
+        884.0,
+        429.0
+      ],
+      "text_en": "exhibit varying degrees of decline, which demonstrates the contribution of each component to the overall framework. Notably, the w/o CGSeg setting shows significant performance drops across all metrics. Although slightly better than the Native setting due to the presence of H-RAG.",
+      "text_zh": "会出现不同程度的下降，说明每个组件都对整体框架有贡献。尤其是 w/o CGSeg 设置在所有指标上都有显著性能下降。由于仍保留 H-RAG，它略优于 Native setting。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_8_4",
+      "page": 8,
+      "index_on_page": 4,
+      "bbox": [
+        507.0,
+        441.0,
+        645.0,
+        456.0
+      ],
+      "text_en": "5.6 Case Study",
+      "text_zh": "### 5.6 Case Study / 案例研究",
+      "kind": "body"
+    },
+    {
+      "pid": "p_8_5",
+      "page": 8,
+      "index_on_page": 5,
+      "bbox": [
+        507.0,
+        462.0,
+        884.0,
+        689.0
+      ],
+      "text_en": "Figure 5 presents slides generated by different models under three levels of difficulty. It can be observed that models based on natural language often fail to satisfy the detailed and layout-specific requirements of reference images. These models frequently produce slides with overlapping elements or content that extends beyond canvas boundaries. In medium and complex samples, the generated code often fails to compile. In contrast, Slide-Coder’s CGSeg mechanism enables the MLLM to focus more effectively on fine-grained details. Moreover, the layout-aware prompt helps ensure that the spatial arrangement of elements aligns more closely with reference image.",
+      "text_zh": "图 5 展示了不同模型在三个难度等级下生成的幻灯片。可以看到，基于自然语言的方法往往难以满足参考图中细粒度且依赖 layout 的要求。这些模型经常生成元素重叠或内容超出画布边界的幻灯片。在 medium 和 complex 样本中，生成代码也常常无法编译。相比之下，SlideCoder 的 CGSeg 机制使 MLLM 能更有效地关注细粒度细节；同时，layout-aware prompt 有助于确保元素的空间排列更接近参考图。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_8_6",
+      "page": 8,
+      "index_on_page": 6,
+      "bbox": [
+        507.0,
+        701.0,
+        642.0,
+        715.0
+      ],
+      "text_en": "6 Conclusion",
+      "text_zh": "## 6 Conclusion / 结论",
+      "kind": "body"
+    },
+    {
+      "pid": "p_8_7",
+      "page": 8,
+      "index_on_page": 7,
+      "bbox": [
+        505.0,
+        728.0,
+        884.0,
+        921.0
+      ],
+      "text_en": "We introduce a new Reference Image to Slide Generation task and a novel Slide Complexity Metric for evaluating slide complexity. Based on this metric, we build the Slide2Code benchmark with different levels of difficulty. We also propose Slide-Coder enhanced by a Color Gradients-based Segmentation algorithm, a Layout-aware Prompt and a Hierarchical Retrieval-Augmented Code Generation for accurate slide generation. A high-quality training set is curated to fine-tune a 7B open-source model. Experimental results show that SlideCoder outperforms the strongest baselines.",
+      "text_zh": "本文提出新的 Reference Image to Slide Generation 任务，以及用于评估幻灯片复杂度的新 Slide Complexity Metric。基于该指标，我们构建了包含不同难度等级的 Slide2Code benchmark。我们还提出 SlideCoder，它结合 Color Gradients-based Segmentation 算法、Layout-aware Prompt 和 Hierarchical Retrieval-Augmented Code Generation，以实现准确的幻灯片生成。我们整理了高质量训练集，用于微调 7B 开源模型。实验结果表明，SlideCoder 优于最强基线。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_9_1",
+      "page": 9,
+      "index_on_page": 1,
+      "bbox": [
+        114.0,
+        84.0,
+        220.0,
+        98.0
+      ],
+      "text_en": "Limitations",
+      "text_zh": "## Limitations / 局限性",
+      "kind": "body"
+    },
+    {
+      "pid": "p_9_2",
+      "page": 9,
+      "index_on_page": 2,
+      "bbox": [
+        112.0,
+        111.0,
+        492.0,
+        369.0
+      ],
+      "text_en": "In this work, we take the first step toward visionbased slide generation. While our method achieves substantial improvements across multiple evaluation metrics, several limitations remain unaddressed. First, the current framework focuses on generating a single slide from one reference image and does not explore the multi-slide generation scenario. Second, we assume that user input contains separate design and image components, and do not handle the case where a complete slide with embedded pictures is provided as input. Third, due to budget and time constraints, our segmentation algorithm adopts a fixed-rule paradigm. Future work may investigate more flexible model-based detection approaches to enable adaptive and accurate block partitioning.",
+      "text_zh": "在本文中，我们迈出了基于视觉的幻灯片生成的第一步。尽管我们的方法在多个评价指标上取得了显著提升，但仍存在一些尚未解决的限制。首先，当前框架专注于从单张参考图生成单页幻灯片，尚未探索多页幻灯片生成场景。其次，我们假设用户输入包含独立的设计和图片组件，尚未处理输入为一张已嵌入图片的完整幻灯片的情况。第三，受预算和时间限制，我们的分割算法采用固定规则范式。未来工作可以探索更灵活的基于模型的检测方法，以实现自适应且准确的块划分。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_10_1",
+      "page": 10,
+      "index_on_page": 1,
+      "bbox": [
+        510.0,
+        750.0,
+        749.0,
+        766.0
+      ],
+      "text_en": "A Detail ablation analysis",
+      "text_zh": "## Appendix A Detail ablation analysis / 附录 A：详细消融分析",
+      "kind": "body"
+    },
+    {
+      "pid": "p_10_2",
+      "page": 10,
+      "index_on_page": 2,
+      "bbox": [
+        510.0,
+        776.0,
+        773.0,
+        791.0
+      ],
+      "text_en": "A.1 Details of Ablation Settings",
+      "text_zh": "### A.1 Details of Ablation Settings / 消融设置细节",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_1",
+      "page": 11,
+      "index_on_page": 1,
+      "bbox": [
+        149.0,
+        84.0,
+        487.0,
+        181.0
+      ],
+      "text_en": "code assembly, the removal of CGSeg renders Assembler unnecessary. Consequently, both Assembler and its layout-aware prompt are removed in this setting, and the output code generated by Coder is directly treated as the final output of the framework.",
+      "text_zh": "在代码组装阶段，移除 CGSeg 会使 Assembler 不再必要。因此，在该设置中，Assembler 及其 layout-aware prompt 都被移除，Coder 生成的输出代码会被直接视为框架最终输出。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_2",
+      "page": 11,
+      "index_on_page": 2,
+      "bbox": [
+        112.0,
+        369.0,
+        455.0,
+        384.0
+      ],
+      "text_en": "A.2 Detailed Analysis of Ablation Results",
+      "text_zh": "### A.2 Detailed Analysis of Ablation Results / 消融结果详细分析",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_3",
+      "page": 11,
+      "index_on_page": 3,
+      "bbox": [
+        112.0,
+        390.0,
+        485.0,
+        420.0
+      ],
+      "text_en": "Table 4 provides a detailed evaluation metrics under different ablation settings.",
+      "text_zh": "表 4 给出了不同消融设置下的详细评价指标。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_4",
+      "page": 11,
+      "index_on_page": 4,
+      "bbox": [
+        112.0,
+        422.0,
+        487.0,
+        598.0
+      ],
+      "text_en": "In the w/o Layout setting, the Position score under the complex level drops significantly from 81.35 to 72.16. This is primarily because, in complex cases, the CGSeg algorithm typically divides the Reference Image(RI) into more blocks, and without layout information, the Agent struggles to model spatial relationships among multiple elements. This often leads to overlapping or outof-bound content, causing a sharp decline in the Position metric and slightly affecting other metrics as well.",
+      "text_zh": "在 w/o Layout 设置中，complex 等级下的 Position 分数从 81.35 显著下降到 72.16。主要原因是，在复杂样本中，CGSeg 算法通常会将 Reference Image（RI）划分为更多块；缺少 layout 信息时，Agent 很难建模多个元素之间的空间关系。这常常导致内容重叠或越界，使 Position 指标大幅下降，并轻微影响其他指标。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_5",
+      "page": 11,
+      "index_on_page": 5,
+      "bbox": [
+        112.0,
+        599.0,
+        487.0,
+        743.0
+      ],
+      "text_en": "In the w/o CGSeg setting, both the CGSeg mechanism and the layout-aware prompt are removed. As a result, a single Describer Agent is required to handle the entire complex slide, which exceeds its processing capacity, often leading to code generation failures and a sharp drop in execution success rate. Its performance is slightly better than the Native setting due to the additional knowledge provided by H-RAG.",
+      "text_zh": "在 w/o CGSeg 设置中，CGSeg 机制和 layout-aware prompt 均被移除。因此，单个 Describer Agent 需要处理整张复杂幻灯片，这超过了其处理能力，往往导致代码生成失败，并使执行成功率急剧下降。由于 H-RAG 仍提供额外知识，其表现略好于 Native setting。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_6",
+      "page": 11,
+      "index_on_page": 6,
+      "bbox": [
+        112.0,
+        744.0,
+        489.0,
+        921.0
+      ],
+      "text_en": "In the w/o H-RAG setting, the <Grammar> component is removed from each Agent. Excluding this component from Describer reduces its ability to accurately identify the corresponding python-pptx object. Similarly, removing it from Coder and Assembler deprives the Agents of essential syntactic guidance, often resulting in version-related errors caused by inconsistencies between the model’s training data and the current version of the python-pptx library. These combined factors lead to overall performance degradation.",
+      "text_zh": "在 w/o H-RAG 设置中，每个 Agent 的 <Grammar> 组件被移除。Describer 缺少该组件会降低其准确识别对应 python-pptx 对象的能力；同样，Coder 和 Assembler 缺少该组件后会失去关键语法指导，常因模型训练数据与当前 python-pptx 库版本不一致而产生版本相关错误。这些因素共同导致整体性能下降。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_7",
+      "page": 11,
+      "index_on_page": 7,
+      "bbox": [
+        507.0,
+        84.0,
+        884.0,
+        212.0
+      ],
+      "text_en": "In the Native setting, both the CGSeg mechanism and H-RAG are removed, leaving a single Coder Agent to handle the entire slide without any auxiliary support. This reduces the framework to a plain MLLM-based inference process, severely limiting its ability to generate structured and executable code, and resulting in the lowest execution rate and overall performance.",
+      "text_zh": "在 Native setting 中，CGSeg 机制和 H-RAG 均被移除，只保留单个 Coder Agent 在没有任何辅助支持的情况下处理整张幻灯片。这使框架退化为普通的基于 MLLM 的推理流程，严重限制其生成结构化、可执行代码的能力，并导致最低的执行率和整体性能。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_8",
+      "page": 11,
+      "index_on_page": 8,
+      "bbox": [
+        507.0,
+        224.0,
+        870.0,
+        240.0
+      ],
+      "text_en": "B Detailed comparisons of Reverse Tool",
+      "text_zh": "## Appendix B Detailed comparisons of Reverse Tool / 附录 B：逆向工具详细对比",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_9",
+      "page": 11,
+      "index_on_page": 9,
+      "bbox": [
+        507.0,
+        250.0,
+        882.0,
+        282.0
+      ],
+      "text_en": "Table 5 lists the object types and their styles supported by our reverse engineering tool.",
+      "text_zh": "表 5 列出了我们逆向工程工具支持的对象类型及其样式。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_10",
+      "page": 11,
+      "index_on_page": 10,
+      "bbox": [
+        507.0,
+        282.0,
+        880.0,
+        329.0
+      ],
+      "text_en": "Table 6 lists the object types and their styles supported by AutoPresent’s reverse engineering tool.",
+      "text_zh": "表 6 列出了 AutoPresent 逆向工程工具支持的对象类型及其样式。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_11",
+      "page": 11,
+      "index_on_page": 11,
+      "bbox": [
+        507.0,
+        342.0,
+        803.0,
+        359.0
+      ],
+      "text_en": "C LoRA fine-tuning parameters",
+      "text_zh": "## Appendix C LoRA fine-tuning parameters / 附录 C：LoRA 微调参数",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_12",
+      "page": 11,
+      "index_on_page": 12,
+      "bbox": [
+        507.0,
+        367.0,
+        882.0,
+        397.0
+      ],
+      "text_en": "The LoRA fine-tuning parameters are listed in Table 7.",
+      "text_zh": "LoRA 微调参数列于表 7。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_13",
+      "page": 11,
+      "index_on_page": 13,
+      "bbox": [
+        507.0,
+        411.0,
+        855.0,
+        443.0
+      ],
+      "text_en": "D Evaluation Dimensions and Scoring Criteria",
+      "text_zh": "## Appendix D Evaluation Dimensions and Scoring Criteria / 附录 D：评估维度与评分标准",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_14",
+      "page": 11,
+      "index_on_page": 14,
+      "bbox": [
+        507.0,
+        453.0,
+        882.0,
+        485.0
+      ],
+      "text_en": "The evaluation guidelines for the four doctoral student annotators are provided in Figure 6.",
+      "text_zh": "面向四名博士生标注者的评估指南见图 6。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_15",
+      "page": 11,
+      "index_on_page": 15,
+      "bbox": [
+        507.0,
+        497.0,
+        705.0,
+        513.0
+      ],
+      "text_en": "E Prompt Templates",
+      "text_zh": "## Appendix E Prompt Templates / 附录 E：提示模板",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_16",
+      "page": 11,
+      "index_on_page": 16,
+      "bbox": [
+        507.0,
+        521.0,
+        882.0,
+        571.0
+      ],
+      "text_en": "The prompt templates for the Describer and Coder are shown in Figure 7 and Figure 8, respectively. Layout-aware prompt is shown in Figure 9.",
+      "text_zh": "Describer 和 Coder 的提示模板分别见图 7 和图 8；Layout-aware prompt 见图 9。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_17",
+      "page": 11,
+      "index_on_page": 17,
+      "bbox": [
+        507.0,
+        582.0,
+        806.0,
+        613.0
+      ],
+      "text_en": "F Details of the Knowledge Base Construction",
+      "text_zh": "## Appendix F Details of the Knowledge Base Construction / 附录 F：知识库构建细节",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_18",
+      "page": 11,
+      "index_on_page": 18,
+      "bbox": [
+        507.0,
+        624.0,
+        884.0,
+        753.0
+      ],
+      "text_en": "Figure 10 presents several examples from the Shape Type Knowledge Base, which consists of object types defined in the python-pptx library along with their corresponding descriptions. Figure 11 shows an example from the Operation Function Knowledge Base, which includes the function name, parameters, return value, usage example, and a textual explanation of the function.",
+      "text_zh": "图 10 展示了 Shape Type Knowledge Base 中的若干示例，该知识库由 python-pptx 库中定义的对象类型及其对应描述组成。图 11 展示了 Operation Function Knowledge Base 的一个示例，其中包含函数名、参数、返回值、使用示例以及函数的文本说明。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_13_1",
+      "page": 13,
+      "index_on_page": 1,
+      "bbox": [
+        228.0,
+        177.0,
+        583.0,
+        196.0
+      ],
+      "text_en": "Slide Complexity Evaluation Guide",
+      "text_zh": "### Slide Complexity Evaluation Guide / 幻灯片复杂度评估指南",
+      "kind": "body"
+    },
+    {
+      "pid": "p_13_2",
+      "page": 13,
+      "index_on_page": 2,
+      "bbox": [
+        228.0,
+        200.0,
+        369.0,
+        212.0
+      ],
+      "text_en": "Purpose of Evaluation",
+      "text_zh": "**Purpose of Evaluation / 评估目的**",
+      "kind": "body"
+    },
+    {
+      "pid": "p_13_3",
+      "page": 13,
+      "index_on_page": 3,
+      "bbox": [
+        228.0,
+        215.0,
+        766.0,
+        240.0
+      ],
+      "text_en": "This guideline is intended to assist you in subjectively evaluating the complexity of slide samples based on the following three dimensions:",
+      "text_zh": "本指南旨在帮助你基于以下三个维度，对幻灯片样本的复杂度进行主观评估：",
+      "kind": "body"
+    },
+    {
+      "pid": "p_13_4",
+      "page": 13,
+      "index_on_page": 4,
+      "bbox": [
+        228.0,
+        285.0,
+        766.0,
+        326.0
+      ],
+      "text_en": "Each dimension should be scored on a scale from 0 to 100. You are expected to assess each slide independently and provide a final overall score reflecting your holistic judgment of the slide’s complexity.",
+      "text_zh": "每个维度均按 0 到 100 分评分。你需要独立评估每张幻灯片，并给出一个最终总体分数，以反映你对该幻灯片复杂度的整体判断。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_13_5",
+      "page": 13,
+      "index_on_page": 5,
+      "bbox": [
+        228.0,
+        328.0,
+        378.0,
+        338.0
+      ],
+      "text_en": "Evaluation Procedure",
+      "text_zh": "**Evaluation Procedure / 评估流程**",
+      "kind": "body"
+    },
+    {
+      "pid": "p_13_6",
+      "page": 13,
+      "index_on_page": 6,
+      "bbox": [
+        228.0,
+        342.0,
+        443.0,
+        354.0
+      ],
+      "text_en": "For each slide, please follow these steps:",
+      "text_zh": "请针对每张幻灯片按以下步骤进行：",
+      "kind": "body"
+    },
+    {
+      "pid": "p_13_7",
+      "page": 13,
+      "index_on_page": 7,
+      "bbox": [
+        228.0,
+        413.0,
+        450.0,
+        425.0
+      ],
+      "text_en": "Scoring Dimensions and Criteria",
+      "text_zh": "**Scoring Dimensions and Criteria / 评分维度与标准**",
+      "kind": "body"
+    },
+    {
+      "pid": "p_13_8",
+      "page": 13,
+      "index_on_page": 8,
+      "bbox": [
+        228.0,
+        426.0,
+        349.0,
+        439.0
+      ],
+      "text_en": "1. Number of Shapes",
+      "text_zh": "1. Number of Shapes / 形状数量",
+      "kind": "body"
+    },
+    {
+      "pid": "p_13_9",
+      "page": 13,
+      "index_on_page": 9,
+      "bbox": [
+        228.0,
+        441.0,
+        766.0,
+        467.0
+      ],
+      "text_en": "Refers to the total count of visual elements on the slide, including but not limited to: text boxes, diagrams, arrows, lines, images, geometric shapes, etc.",
+      "text_zh": "指幻灯片中视觉元素的总数，包括但不限于文本框、图示、箭头、线条、图片、几何形状等。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_13_10",
+      "page": 13,
+      "index_on_page": 10,
+      "bbox": [
+        228.0,
+        526.0,
+        383.0,
+        538.0
+      ],
+      "text_en": "2. Diversity of Shape Types",
+      "text_zh": "2. Diversity of Shape Types / 形状类型多样性",
+      "kind": "body"
+    },
+    {
+      "pid": "p_13_11",
+      "page": 13,
+      "index_on_page": 11,
+      "bbox": [
+        228.0,
+        539.0,
+        766.0,
+        565.0
+      ],
+      "text_en": "Measures how varied the types of visual components are. Common types include text boxes, images, tables, flowcharts, icons, arrows, geometric shapes (e.g., rectangles, circles, lines), and more.",
+      "text_zh": "衡量视觉组件类型的丰富程度。常见类型包括文本框、图片、表格、流程图、图标、箭头、几何形状（例如矩形、圆形、线条）等。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_13_12",
+      "page": 13,
+      "index_on_page": 12,
+      "bbox": [
+        228.0,
+        625.0,
+        349.0,
+        637.0
+      ],
+      "text_en": "3. Visual Complexity",
+      "text_zh": "3. Visual Complexity / 视觉复杂度",
+      "kind": "body"
+    },
+    {
+      "pid": "p_13_13",
+      "page": 13,
+      "index_on_page": 13,
+      "bbox": [
+        228.0,
+        639.0,
+        766.0,
+        664.0
+      ],
+      "text_en": "Refers to how complex the slide appears in terms of visual density, layout structure, information layering, and cognitive load. It captures the subjective perception of how “complicated” the slide looks.",
+      "text_zh": "指从视觉密度、layout 结构、信息层次和认知负荷等方面看，幻灯片呈现出的复杂程度。它刻画的是幻灯片看起来有多“复杂”的主观感受。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_13_14",
+      "page": 13,
+      "index_on_page": 14,
+      "bbox": [
+        228.0,
+        722.0,
+        400.0,
+        734.0
+      ],
+      "text_en": "Overall Score Guidelines",
+      "text_zh": "**Overall Score Guidelines / 总体评分指南**",
+      "kind": "body"
+    },
+    {
+      "pid": "p_13_15",
+      "page": 13,
+      "index_on_page": 15,
+      "bbox": [
+        228.0,
+        738.0,
+        766.0,
+        764.0
+      ],
+      "text_en": "After rating the three dimensions above, you are asked to provide a final overall score (0–100) that reflects your subjective judgment of the slide’s overall complexity.",
+      "text_zh": "完成上述三个维度评分后，请给出一个最终总体分数（0–100），反映你对幻灯片整体复杂度的主观判断。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_13_16",
+      "page": 13,
+      "index_on_page": 16,
+      "bbox": [
+        228.0,
+        766.0,
+        766.0,
+        791.0
+      ],
+      "text_en": "⚠ Note: This does not need to be a simple average of the three scores. Instead, consider how each factor influences the overall perception of complexity.",
+      "text_zh": "注意：该分数不必是三个维度分数的简单平均。相反，请考虑每个因素如何影响你对整体复杂度的感知。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_13_17",
+      "page": 13,
+      "index_on_page": 17,
+      "bbox": [
+        225.0,
+        879.0,
+        769.0,
+        895.0
+      ],
+      "text_en": "Figure 6: Evaluation guidelines provided to the four doctoral student annotators.",
+      "text_zh": "图 6：提供给四名博士生标注者的评估指南。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_15_15",
+      "page": 15,
+      "index_on_page": 15,
+      "bbox": [
+        403.0,
+        879.0,
+        589.0,
+        894.0
+      ],
+      "text_en": "Figure 8: Prompt of Coder.",
+      "text_zh": "图 8：Coder 的提示。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_16_21",
+      "page": 16,
+      "index_on_page": 21,
+      "bbox": [
+        388.0,
+        879.0,
+        608.0,
+        895.0
+      ],
+      "text_en": "Figure 9: Layout-aware prompt.",
+      "text_zh": "图 9：Layout-aware prompt。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_17_1",
+      "page": 17,
+      "index_on_page": 1,
+      "bbox": [
+        230.0,
+        174.0,
+        299.0,
+        185.0
+      ],
+      "text_en": "Auto Shape",
+      "text_zh": "**Auto Shape / 自动形状**",
+      "kind": "body"
+    },
+    {
+      "pid": "p_17_2",
+      "page": 17,
+      "index_on_page": 2,
+      "bbox": [
+        228.0,
+        187.0,
+        768.0,
+        256.0
+      ],
+      "text_en": "An auto shape is a predefined, customizable shape in PowerPoint, such as a rectangle, ellipse, or block arrow, with approximately 180 variations. Auto shapes can have a fill, outline, and contain text. Some include adjustable features, indicated by yellow diamond handles (e.g., to modify the corner radius of a rounded rectangle). A text box is a specific type of auto shape, typically rectangular, with no default fill or outline.",
+      "text_zh": "自动形状是 PowerPoint 中预定义且可自定义的形状，例如矩形、椭圆或块箭头，大约有 180 种变体。自动形状可以具有填充、轮廓，并可包含文本。有些自动形状带有可调节属性，通常由黄色菱形手柄表示（例如修改圆角矩形的圆角半径）。文本框是一种特殊的自动形状，通常为矩形，默认没有填充或轮廓。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_17_4",
+      "page": 17,
+      "index_on_page": 4,
+      "bbox": [
+        230.0,
+        300.0,
+        273.0,
+        311.0
+      ],
+      "text_en": "Picture",
+      "text_zh": "**Picture / 图片**",
+      "kind": "body"
+    },
+    {
+      "pid": "p_17_5",
+      "page": 17,
+      "index_on_page": 5,
+      "bbox": [
+        228.0,
+        313.0,
+        768.0,
+        369.0
+      ],
+      "text_en": "A picture in PowerPoint refers to a raster image, such as a photograph or clip art, treated as a distinct shape type with unique behaviors compared to auto shapes. Note that an auto shape can have a picture fill, where an image serves as the shape’s background instead of a color or gradient, but this is a separate feature.",
+      "text_zh": "PowerPoint 中的图片指光栅图像，例如照片或剪贴画；它被视为一种独立的形状类型，其行为不同于自动形状。需要注意的是，自动形状可以使用图片填充，即用图像作为形状背景，而不是颜色或渐变，但这是另一个独立特性。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_17_7",
+      "page": 17,
+      "index_on_page": 7,
+      "bbox": [
+        230.0,
+        413.0,
+        317.0,
+        425.0
+      ],
+      "text_en": "Graphic Frame",
+      "text_zh": "**Graphic Frame / 图形框架**",
+      "kind": "body"
+    },
+    {
+      "pid": "p_17_8",
+      "page": 17,
+      "index_on_page": 8,
+      "bbox": [
+        228.0,
+        426.0,
+        766.0,
+        468.0
+      ],
+      "text_en": "A graphic frame is a container that automatically appears in a PowerPoint file when adding graphical objects like tables, charts, SmartArt diagrams, or media clips. It cannot be inserted independently and typically requires no direct interaction from the user.",
+      "text_zh": "图形框架是在 PowerPoint 文件中添加表格、图表、SmartArt 图示或媒体剪辑等图形对象时自动出现的容器。它不能独立插入，通常也不需要用户直接交互。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_17_10",
+      "page": 17,
+      "index_on_page": 10,
+      "bbox": [
+        230.0,
+        512.0,
+        305.0,
+        524.0
+      ],
+      "text_en": "Group Shape",
+      "text_zh": "**Group Shape / 组合形状**",
+      "kind": "body"
+    },
+    {
+      "pid": "p_17_11",
+      "page": 17,
+      "index_on_page": 11,
+      "bbox": [
+        228.0,
+        526.0,
+        766.0,
+        567.0
+      ],
+      "text_en": "A group shape is created when multiple shapes in PowerPoint are grouped, enabling them to be selected, moved, resized, or filled as a single unit. The group shape is only visible through its bounding box when selected, containing the individual member shapes.",
+      "text_zh": "组合形状是在 PowerPoint 中将多个形状组合后形成的对象，使它们可以作为一个整体被选择、移动、调整大小或填充。组合形状在被选中时只通过其边界框可见，内部包含各个成员形状。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_17_13",
+      "page": 17,
+      "index_on_page": 13,
+      "bbox": [
+        230.0,
+        611.0,
+        319.0,
+        621.0
+      ],
+      "text_en": "Line/Connector",
+      "text_zh": "**Line/Connector / 线条或连接符**",
+      "kind": "body"
+    },
+    {
+      "pid": "p_17_14",
+      "page": 17,
+      "index_on_page": 14,
+      "bbox": [
+        228.0,
+        625.0,
+        766.0,
+        665.0
+      ],
+      "text_en": "Lines are linear shapes distinct from auto shapes. Some lines, known as connectors, can attach to other shapes and remain connected when those shapes are moved. Connectors are not yet fully supported in some contexts, but they are valuable for creating dynamic diagrams.",
+      "text_zh": "线条是不同于自动形状的线性形状。其中一些线条称为连接符，可以附着到其他形状上，并在这些形状移动时保持连接。连接符在某些场景中尚未得到完全支持，但对于创建动态图示很有价值。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_17_16",
+      "page": 17,
+      "index_on_page": 16,
+      "bbox": [
+        230.0,
+        709.0,
+        302.0,
+        721.0
+      ],
+      "text_en": "Content Part",
+      "text_zh": "**Content Part / 内容部件**",
+      "kind": "body"
+    },
+    {
+      "pid": "p_17_17",
+      "page": 17,
+      "index_on_page": 17,
+      "bbox": [
+        228.0,
+        724.0,
+        766.0,
+        765.0
+      ],
+      "text_en": "A content part involves embedding external XML data, such as SVG, within a PowerPoint presentation. PowerPoint itself does not actively utilize content parts, and they can generally be ignored without impacting functionality.",
+      "text_zh": "内容部件涉及在 PowerPoint 演示文稿中嵌入外部 XML 数据，例如 SVG。PowerPoint 本身不会主动使用内容部件，通常可以忽略它们而不影响功能。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_17_18",
+      "page": 17,
+      "index_on_page": 18,
+      "bbox": [
+        295.0,
+        879.0,
+        699.0,
+        895.0
+      ],
+      "text_en": "Figure 10: Examples from the Shape Type knowledge base.",
+      "text_zh": "图 10：Shape Type Knowledge Base 中的示例。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_18_20",
+      "page": 18,
+      "index_on_page": 20,
+      "bbox": [
+        228.0,
+        738.0,
+        766.0,
+        791.0
+      ],
+      "text_en": "The \\`pptx.Presentation\\` function is the primary entry point for creating or loading a PowerPoint presentation. It initializes a \\`Presentation\\` object, which provides access to slides, slide masters, layouts, and other presentation components, enabling programmatic manipulation of presentation content.",
+      "text_zh": "`pptx.Presentation` 函数是创建或加载 PowerPoint 演示文稿的主要入口。它会初始化一个 `Presentation` 对象，该对象提供对 slides、slide masters、layouts 以及其他演示文稿组件的访问，从而支持以编程方式操作演示文稿内容。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_18_21",
+      "page": 18,
+      "index_on_page": 21,
+      "bbox": [
+        260.0,
+        879.0,
+        732.0,
+        895.0
+      ],
+      "text_en": "Figure 11: An example from the Operation Function knowledge base.",
+      "text_zh": "图 11：Operation Function Knowledge Base 中的一个示例。",
+      "kind": "body"
+    }
+  ]
+}

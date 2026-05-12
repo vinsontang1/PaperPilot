@@ -1,0 +1,50 @@
+[
+  {
+    "type": "highlight",
+    "tier": 1,
+    "target": {
+      "source": "summary.md",
+      "quote": "实排斥其哲学/",
+      "prefix": "同为科幻\"推荐《Hyperion》，却忽略用户其",
+      "suffix": "形而上学主题。由此提出两个挑战：(1) 如何不被"
+    },
+    "color": "#fde68a",
+    "comment_markdown": "",
+    "id": "a_5dc113af31",
+    "broken": false,
+    "created_at": "2026-05-08T08:43:41+00:00",
+    "updated_at": "2026-05-08T08:43:41+00:00"
+  },
+  {
+    "type": "highlight",
+    "tier": 3,
+    "target": {
+      "pid": null,
+      "quote": "commendatio",
+      "char_start": 0,
+      "char_end": 11
+    },
+    "color": "#fde68a",
+    "comment_markdown": "",
+    "id": "a_e49a8dd6ee",
+    "broken": false,
+    "created_at": "2026-05-11T06:06:12+00:00",
+    "updated_at": "2026-05-11T06:06:12+00:00"
+  },
+  {
+    "type": "highlight",
+    "tier": 3,
+    "target": {
+      "pid": null,
+      "quote": "commendatio",
+      "char_start": 0,
+      "char_end": 11
+    },
+    "color": "#fde68a",
+    "comment_markdown": "",
+    "id": "a_7951be2577",
+    "broken": false,
+    "created_at": "2026-05-11T06:06:13+00:00",
+    "updated_at": "2026-05-11T06:06:13+00:00"
+  }
+]

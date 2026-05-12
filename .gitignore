@@ -1,0 +1,25 @@
+# Runtime
+.pid
+.port
+.log
+*.lock
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Temp
+/tmp/
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# User data (not shipped, except demo papers)
+# To exclude your own data after cloning, uncomment:
+# data/origin/*.pdf
+# data/papers/*/source.pdf

@@ -1,0 +1,18 @@
+{
+  "tree": {
+    "recommendation": {
+      "llm4rec": {}
+    },
+    "document-generation": {
+      "slides": {}
+    }
+  },
+  "papers": {
+    "recommendation/llm4rec": [
+      "thinkrec-thinking-based-recommendation-via-llm"
+    ],
+    "document-generation/slides": [
+      "slidecoder-layout-aware-rag-enhanced-hierarchical-slide-gene"
+    ]
+  }
+}

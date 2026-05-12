@@ -1,0 +1,1362 @@
+{
+  "paragraphs": [
+    {
+      "pid": "p_1_1",
+      "page": 1,
+      "index_on_page": 1,
+      "bbox": [
+        153.0,
+        101.0,
+        843.0,
+        126.0
+      ],
+      "text_en": "ThinkRec: Thinking-based Recommendation via LLM",
+      "text_zh": "ThinkRec：基于思考的 LLM 推荐方法",
+      "kind": "body"
+    },
+    {
+      "pid": "p_1_41",
+      "page": 1,
+      "index_on_page": 41,
+      "bbox": [
+        81.0,
+        412.0,
+        483.0,
+        758.0
+      ],
+      "text_en": "Recent advances in large language models (LLMs) have enabled more semantic-aware recommendations through natural language generation. Existing LLM for recommendation (LLM4Rec) methods mostly operate in a System 1-like manner, relying on superficial features to match similar items based on click history, rather than reasoning through deeper behavioral logic. This often leads to superficial and erroneous recommendations. Inspired by this, we propose ThinkRec, a thinking-based framework that shifts LLM4Rec from an intuitive system to a rational system. First, ThinkRec introduces a thinking activation mechanism by injecting synthetic reasoning traces, making the recommendation process resemble the Chain of Thought (CoT) reasoning of LLMs. This mechanism analyzes interaction histories, identifies user preferences, and makes decisions based on target items. Furthermore, considering the highly diverse distribution of recommendation data, we propose an instance-wise expert fusion mechanism to reduce the reasoning difficulty. By dynamically assigning weights to expert models based on users’ latent features, ThinkRec adapts its reasoning path to individual users, thereby enhancing precision and personalization. Extensive experiments on various real-world web user behavior preference datasets demonstrate that ThinkRec significantly outperforms baselines in terms of recommendation accuracy and interpretability, providing superior recommendations based on a deeper understanding of user intent and a more rigorous reasoning process. Code is available in https://github.com/Yu-Qi-hang/ThinkRec.",
+      "text_zh": "近年来大语言模型（LLM）的进展使得基于自然语言生成的、更具语义感知能力的推荐成为可能。现有的 LLM4Rec 方法大多以类似 System 1 的方式运作，仅依赖表层特征根据点击历史匹配相似物品，而没有通过更深层的行为逻辑进行推理，这往往导致表层化甚至错误的推荐结果。受此启发，我们提出 ThinkRec —— 一个基于思考的框架，将 LLM4Rec 从直觉式系统推向理性系统。首先，ThinkRec 通过注入合成推理轨迹引入了一种思考激活机制，使推荐过程类似于 LLM 的 Chain-of-Thought (CoT) 推理：分析交互历史、识别用户偏好、并基于目标物品做出决策。其次，考虑到推荐数据分布高度多样，我们提出了一种实例级专家融合机制以降低推理难度——根据用户潜在特征动态地为各专家模型分配权重，使 ThinkRec 能够针对个体用户调整推理路径，从而提升精度与个性化能力。在多个真实世界 web 用户行为偏好数据集上的大量实验表明，ThinkRec 在推荐准确率与可解释性上都显著优于 baseline，能够基于对用户意图的更深理解和更严谨的推理过程提供更优的推荐。代码见 https://github.com/Yu-Qi-hang/ThinkRec。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_1_53",
+      "page": 1,
+      "index_on_page": 53,
+      "bbox": [
+        514.0,
+        585.0,
+        648.0,
+        599.0
+      ],
+      "text_en": "1 Introduction",
+      "text_zh": "1 引言",
+      "kind": "body"
+    },
+    {
+      "pid": "p_1_54",
+      "page": 1,
+      "index_on_page": 54,
+      "bbox": [
+        511.0,
+        604.0,
+        913.0,
+        715.0
+      ],
+      "text_en": "Recommendation systems are indispensable in modern digital platforms, enabling users to navigate vast content efficiently [9, 13, 29]. Traditional sequential recommendation methods rely on implicit modeling of user interaction histories and are limited in their ability to model context and incorporate broader knowledge, which restricts their reasoning and generalization capabilities. Recent advances in LLMs offer strong contextual comprehension and extensive world knowledge to improve recommendation systems.",
+      "text_zh": "推荐系统在现代数字平台中不可或缺，能够帮助用户在海量内容中高效导航 [9, 13, 29]。传统的序列推荐方法依赖于对用户交互历史的隐式建模，在建模上下文与引入更广泛知识方面能力有限，制约了它们的推理与泛化能力。LLM 的最新进展为推荐系统提供了强大的上下文理解能力和广阔的世界知识。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_1_55",
+      "page": 1,
+      "index_on_page": 55,
+      "bbox": [
+        511.0,
+        715.0,
+        913.0,
+        896.0
+      ],
+      "text_en": "Prior LLM4Rec paradigms can be separated into three categories: (1) item scoring [23, 46], where LLMs answer binary preference questions given user and item context; (2) item generation [2, 3, 6, 20], which maps natural language prompts to item IDs through aligned embedding spaces or semantic identifiers; and (3) hybrid modeling [8, 44], where a single LLM performs multiple tasks such as point-wise prediction, pair-wise ranking, or list-wise generation. Although these LLM4Rec methods differ in output formats and representation learning strategies, they fundamentally resemble System 1—the intuitive system—in cognitive science [17]. They tend to match similar items based on click history, while overlooking the deeper behavioral logic. This limitation becomes evident in cases such as the one shown in Figure 1(b), where the user’s behavior",
+      "text_zh": "已有的 LLM4Rec 范式可以分为三类：(1) 物品打分 [23, 46]，由 LLM 在给定用户与物品上下文的情况下回答二元偏好问题；(2) 物品生成 [2, 3, 6, 20]，通过对齐的 embedding 空间或语义标识符将自然语言 prompt 映射为物品 ID；(3) 混合建模 [8, 44]，由单个 LLM 同时执行 point-wise 预测、pair-wise 排序、list-wise 生成等多种任务。尽管这些 LLM4Rec 方法在输出格式与表征学习策略上各有不同，但它们本质上都类似认知科学中的 System 1（直觉系统）[17]：根据点击历史匹配相似物品，而忽视了更深层的行为逻辑。这一局限在图 1(b) 等情形中尤为明显，例如其中用户的行为",
+      "kind": "body"
+    },
+    {
+      "pid": "p_2_1",
+      "page": 2,
+      "index_on_page": 1,
+      "bbox": [
+        81.0,
+        446.0,
+        482.0,
+        571.0
+      ],
+      "text_en": "over time is: dislikes “Dune”, likes “The Three-Body Problem”, and likes “Foundation” (all three are science fiction). Methods that rely on System 1-like intuition tend to infer that the user would also like “Hyperion” (science fiction) simply because it belongs to the same genre. In reality, the user might dislike philosophical or metaphysical themes in fiction, which are prominent in *Hyperion*, making it an unsuitable recommendation. Clearly, if we can leverage the vast knowledge in LLMs and fully activate their reasoning capabilities , recommendation performance can be significantly improved.",
+      "text_zh": "随时间变化为：不喜欢《沙丘》、喜欢《三体》、喜欢《基地》（三者皆为科幻作品）。依赖 System 1 式直觉的方法往往会推断该用户也会喜欢《海伯利安》（同为科幻），仅仅因为它属于同一题材。但实际上，该用户可能并不喜欢小说中浓厚的哲学或形而上主题，而这恰恰是《海伯利安》的核心，因此并非合适的推荐。显然，如果我们能够利用 LLM 的庞大知识储备并充分激活其推理能力，推荐性能将获得显著提升。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_2_2",
+      "page": 2,
+      "index_on_page": 2,
+      "bbox": [
+        81.0,
+        571.0,
+        482.0,
+        821.0
+      ],
+      "text_en": "This motivates our effort to push LLM4Rec from a System 1 paradigm toward a more rational, System 2-like reasoning framework. Recent concurrent works have also explored latent reasoning [33, 47] or dual-head reasoning architectures [41] to address this. We raise two key questions for the advancement: 1) How to effectively balance recommendation objectives with language modeling tasks to fully exploit the reasoning capabilities of LLMs. Existing methods often prioritize direct recommendation metrics such as hit rate or ranking accuracy, overlooking LLMs’ strengths in semantic reasoning. However, blind reinforcement thinking can lead to simple next token prediction, defeating the goal of recommendation. 2) How to think more effectively in the presence of diverse user behaviors and underlying preferences. As shown in Figure 1(c), user behaviors vary widely, and uniform modeling tends to obscure personality preferences while distracting the model from salient signals, impairing its reasoning capacity. Moreover, inferring user intent solely from high-rating items and generic world knowledge limits the informational basis for accurate preference reasoning.",
+      "text_zh": "这促使我们将 LLM4Rec 从 System 1 范式推向更理性的、类似 System 2 的推理框架。近期的并行工作也尝试通过潜在推理 [33, 47] 或双头推理架构 [41] 来解决这一问题。我们提出推动这一方向的两个关键问题：1) 如何在推荐目标与语言建模任务之间取得有效平衡，从而充分释放 LLM 的推理能力？现有方法往往优先优化命中率或排序准确率等直接的推荐指标，忽视了 LLM 在语义推理方面的优势；然而盲目地强化思考又可能退化为简单的 next token prediction，背离了推荐的目标。2) 在用户行为多样、潜在偏好各异的情况下，如何更有效地进行思考？如图 1(c) 所示，用户行为差异巨大，统一建模容易掩盖个性化偏好，分散模型对显著信号的注意力，从而损害其推理能力；此外，仅根据高分物品和通用世界知识来推断用户意图，也限制了准确进行偏好推理的信息基础。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_2_3",
+      "page": 2,
+      "index_on_page": 3,
+      "bbox": [
+        81.0,
+        821.0,
+        482.0,
+        891.0
+      ],
+      "text_en": "To address these challenges, we propose Thinking-based Recommendation via LLM, abbreviated as ThinkRec. One of the main problems faced is that the data and optimization goals of recommendation tasks lack the ability to activate thinking in LLMs (Challenge 1). To overcome this challenge, we designed the item augmentation",
+      "text_zh": "为应对上述挑战，我们提出 Thinking-based Recommendation via LLM，简称 ThinkRec。我们面临的核心问题之一是：推荐任务的数据与优化目标本身缺乏激活 LLM 思考能力的机制（挑战 1）。为克服这一挑战，我们设计了物品增强",
+      "kind": "body"
+    },
+    {
+      "pid": "p_2_4",
+      "page": 2,
+      "index_on_page": 4,
+      "bbox": [
+        511.0,
+        446.0,
+        915.0,
+        821.0
+      ],
+      "text_en": "and thinking activation framework for finetuning. The fine-tuned model analyzes associations in historical item information, determines user preferences, and gives explicit reasons while deriving recommendations. We extracted the metadata keywords of the items with the help of an existing summarization model as the augmentation information of the items to support the reasoning. In addition, reasoning data is synthesized using a strong reasoning model, and the reasoning capability is distilled to the local model by mixed sampling of reasoning and recommendation data. Therefore, item augmentation and thinking activation become a bridge connecting the recommendation task and the language task, making recommendations traceable. To address the difficulty of thinking diversely with rich information (Challenge 2), we add the user’s preferences (yes/no) of items to the prompts and generate personalized recommendation experts based on latent user features. In the technique, we design a dynamic Low-Rank Adaptation (LoRA) fusion method. Users are grouped by latent user features extracted with traditional recommendation models as shown in Figure 1(c). A set of base LoRAs can be fine-tuned using the grouped data and represented with corresponding user features. For each user, the engagement level of each LoRA can be determined through a gating mechanism. The difficulty of thinking is reduced through information classification and personalization mechanisms. In deployment, the reasoning ability internalized in model parameters allows ThinkRec to operate efficiently in the ranking stage: by constraining the output to a single token, the model produces batch-level results with just one forward pass.",
+      "text_zh": "与思考激活的 fine-tuning 框架。微调后的模型能够分析历史物品信息中的关联、判断用户偏好，并在给出推荐的同时显式说明理由。我们借助现有的摘要模型抽取物品的元数据关键词作为物品的增强信息，以支持推理。此外，使用一个强推理模型合成推理数据，并通过对推理数据与推荐数据的混合采样将推理能力蒸馏至本地模型。由此，物品增强与思考激活成为连接推荐任务与语言任务的桥梁，使推荐过程具备可追溯性。针对在丰富信息条件下进行多样化思考的难题（挑战 2），我们将用户对物品的偏好（yes/no）加入 prompt，并基于潜在用户特征生成个性化的推荐专家。在技术上，我们设计了一种动态 LoRA 融合方法：通过传统推荐模型抽取的潜在用户特征对用户分组（如图 1(c) 所示），用分组数据 fine-tune 一组 base LoRA 并以对应的用户特征作为其表征。对每个用户，通过门控机制确定每个 LoRA 的参与程度。借助信息分类与个性化机制，思考的难度被有效降低。在部署阶段，模型参数中已内化的推理能力使 ThinkRec 能在 ranking 阶段高效运行：通过将输出限制为单个 token，模型仅需一次前向传递即可产出 batch 级别的结果。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_2_5",
+      "page": 2,
+      "index_on_page": 5,
+      "bbox": [
+        511.0,
+        821.0,
+        915.0,
+        890.0
+      ],
+      "text_en": "We conduct experiments on three real-world recommendation datasets, validating the rationality and effectiveness of ThinkRec. ThinkRec average outperforms state-of-the-art baselines by $7 . 9 6 \\%$ in AUC and by $5 6 . 5 4 \\%$ in METEOR. In summary, the main contributions of this work are fourfold:",
+      "text_zh": "我们在三个真实推荐数据集上进行实验，验证了 ThinkRec 的合理性与有效性。ThinkRec 在 AUC 上平均超越当前 SOTA 基线 $7.96\\%$，在 METEOR 上平均超越 $56.54\\%$。综上，本文的主要贡献有四个方面：",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_1",
+      "page": 3,
+      "index_on_page": 1,
+      "bbox": [
+        83.0,
+        330.0,
+        225.0,
+        345.0
+      ],
+      "text_en": "2 Related Work",
+      "text_zh": "2 相关工作",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_2",
+      "page": 3,
+      "index_on_page": 2,
+      "bbox": [
+        83.0,
+        351.0,
+        364.0,
+        364.0
+      ],
+      "text_en": "2.1 LLM-based Recommendation",
+      "text_zh": "2.1 基于 LLM 的推荐",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_3",
+      "page": 3,
+      "index_on_page": 3,
+      "bbox": [
+        81.0,
+        369.0,
+        482.0,
+        729.0
+      ],
+      "text_en": "LLM-based Recommendation. With the rapid progress of LLMs, there has been growing interest in adapting them to recommendation tasks using both textual and structured data. Early works [4, 12, 21, 46] rely on prompt-based scoring by converting recommendations into binary question-answering, while others [14, 20, 22, 50] align language space with item embeddings to directly generate item IDs. More advanced approaches, such as P5 [7] and InstructRec [44] unify multiple sub-tasks—like rating prediction, pairwise comparison, or ranking, into a single language modeling framework. These methods demonstrate LLMs’ flexibility in expressing recommendation semantics, yet most focus on adapting output formats, treating LLMs as static scorers or selectors with limited interpretability. Beyond static prompting, recent efforts shift toward viewing LLMs as interactive agents capable of multi-step reasoning and personalized decision-making. For example, RecMind [34] and MACRec [35] introduce modularized reasoning structures, enabling planning-based recommendation. Others explore integrating LLMs into various stages of the pipeline—for instance, generating user or item representations [48] or acting as high-level decision controllers [30]. Meanwhile, instruction tuning [44], chain-of-thought prompting [24] have been proposed to enhance LLMs’ semantic understanding. Despite these developments, explicit reasoning supervision and fine-grained user modeling remain underexplored. ThinkRec addresses these gaps by integrating reasoning-augmented training and personalized expert fusion, enabling user-specific recommendations grounded in structured reasoning.",
+      "text_zh": "基于 LLM 的推荐。随着 LLM 的快速发展，将其同时利用文本与结构化数据来适配推荐任务的研究日益活跃。早期工作 [4, 12, 21, 46] 通过将推荐转化为二元问答，借助基于 prompt 的打分实现推荐；另一些工作 [14, 20, 22, 50] 则将语言空间与物品 embedding 对齐，从而直接生成物品 ID。更进一步，P5 [7] 与 InstructRec [44] 等方法将评分预测、pairwise 比较、ranking 等多个子任务统一进同一个语言建模框架。这些方法展示了 LLM 在表达推荐语义方面的灵活性，但大多聚焦于输出格式的适配，将 LLM 视为静态打分器或选择器，可解释性有限。在静态 prompting 之外，近期研究开始把 LLM 视为可进行多步推理与个性化决策的交互式 agent。例如，RecMind [34] 与 MACRec [35] 引入了模块化的推理结构，实现基于规划的推荐；其他工作则探索将 LLM 嵌入推荐流水线的不同阶段——例如生成用户或物品表征 [48]、或作为高层决策控制器 [30]。同时，instruction tuning [44] 与 chain-of-thought prompting [24] 也被用于增强 LLM 的语义理解。尽管已有这些进展，显式的推理监督与细粒度用户建模仍未被充分研究。ThinkRec 通过将推理增强训练与个性化专家融合相结合，填补了这一空白，实现了基于结构化推理的、面向用户的个性化推荐。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_4",
+      "page": 3,
+      "index_on_page": 4,
+      "bbox": [
+        81.0,
+        729.0,
+        482.0,
+        896.0
+      ],
+      "text_en": "Reasoning Model. Recent advances have transformed LLMs from passive token predictors into structured reasoning agents by incorporating process-level supervision. Techniques such as Chain-of-Thought prompting [36], ReAct [40], and Tree-of-Thoughts [39] enable models to generate intermediate reasoning steps, improving interpretability and multistep inference quality. To further reinforce reasoning capabilities, recent works have introduced process reward models [43] and self-improvement pipelines using techniques like Monte Carlo Tree Search [25] and reasoning distillation [38]. These trends define the emerging paradigm of Large Reasoning Models, which prioritize explicit, verifiable thinking processes over direct output. ThinkRec draws inspiration from this direction by",
+      "text_zh": "推理模型。最近的研究通过引入过程级监督，将 LLM 从被动的 token 预测器转变为结构化的推理 agent。Chain-of-Thought prompting [36]、ReAct [40]、Tree-of-Thoughts [39] 等技术使模型能够生成中间推理步骤，提高了可解释性与多步推理的质量。为进一步强化推理能力，近期工作引入了过程奖励模型 [43] 以及借助 Monte Carlo Tree Search [25] 与推理蒸馏 [38] 的自我改进流程。这些趋势共同定义了正在兴起的 Large Reasoning Models 范式，其更强调显式、可验证的思考过程而非直接输出。ThinkRec 正是从这一方向汲取灵感，",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_5",
+      "page": 3,
+      "index_on_page": 5,
+      "bbox": [
+        513.0,
+        107.0,
+        913.0,
+        135.0
+      ],
+      "text_en": "introducing reasoning-augmented training for recommendation, aligning to embed structured reasoning into decision making.",
+      "text_zh": "在推荐场景中引入推理增强训练，使结构化推理嵌入决策过程之中。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_6",
+      "page": 3,
+      "index_on_page": 6,
+      "bbox": [
+        514.0,
+        148.0,
+        609.0,
+        162.0
+      ],
+      "text_en": "3 Method",
+      "text_zh": "3 方法",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_7",
+      "page": 3,
+      "index_on_page": 7,
+      "bbox": [
+        514.0,
+        167.0,
+        660.0,
+        184.0
+      ],
+      "text_en": "3.1 Preliminary",
+      "text_zh": "3.1 预备知识",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_8",
+      "page": 3,
+      "index_on_page": 8,
+      "bbox": [
+        513.0,
+        186.0,
+        913.0,
+        407.0
+      ],
+      "text_en": "Problem Definition. In the view of sequential recommendation, datasets can be formulated as S = {(????,?? , ????,?? )}??=1,2,...,?? ,??=1,2,...,???? , $S = \\{ ( x _ { u , t } , y _ { u , t } ) \\} _ { u = 1 , 2 , \\ldots , N , t = 1 , 2 , \\ldots , T _ { u } }$ where $x _ { u , t } = \\{ y _ { u , 1 : ( t - 1 ) } \\}$ denotes a user’s historical behaviors prior to the ?? th behavior $y _ { u , t }$ and arranged in a chronological order, and $T _ { u }$ denotes the number of behaviors for the user $u$ . We will drop the sub-scripts occasionally and write $( x , y )$ in place of $( x _ { u , t } , y _ { u , t } )$ for simplicity. Each behavior $y$ is represented as $( u , t , i _ { i d } , l )$ , where $i _ { i d }$ is an item ID and $l \\in \\{ 1 , 0 \\}$ indicating the interaction label. Furthermore, additional textual information about items is provided, mainly the item title and description. Given $x _ { u , t }$ , get the textual information, and label to construct a historical text prompt to determine whether or not you would enjoy an item composed of the title and description of $y _ { u , t }$ and give a reason $r _ { u , t }$ . We aim to enable the LLM to provide the underlying thinking beyond merely making recommendations as in previous work, thus achieving more effective and interpretable recommendations.",
+      "text_zh": "问题定义。从序列推荐的视角看，数据集可形式化表示为 $S = \\{ ( x _ { u , t } , y _ { u , t } ) \\} _ { u = 1 , 2 , \\ldots , N , t = 1 , 2 , \\ldots , T _ { u } }$，其中 $x _ { u , t } = \\{ y _ { u , 1 : ( t - 1 ) } \\}$ 表示用户在第 $t$ 次行为 $y _ { u , t }$ 之前按时间顺序排列的历史行为，$T _ { u }$ 表示用户 $u$ 的行为数。为简洁起见，下文有时省略下标，将 $( x _ { u , t } , y _ { u , t } )$ 简写为 $( x , y )$。每个行为 $y$ 表示为 $( u , t , i _ { i d } , l )$，其中 $i _ { i d }$ 为物品 ID，$l \\in \\{ 1 , 0 \\}$ 表示交互标签。此外，每个物品还附带文本信息，主要包括标题与描述。给定 $x _ { u , t }$，我们将文本信息与标签组合成一段历史 prompt，用于判断用户是否会喜欢由 $y _ { u , t }$ 的标题与描述构成的物品，并给出原因 $r _ { u , t }$。我们的目标是让 LLM 不仅能给出推荐，更能展现其背后的思考过程，从而实现更有效、更可解释的推荐。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_9",
+      "page": 3,
+      "index_on_page": 9,
+      "bbox": [
+        513.0,
+        407.0,
+        913.0,
+        464.0
+      ],
+      "text_en": "Integrating Collaborative Embeddings into LLMs. The sequential recommenders, such as MF [19] and LightGCN [11], are used for encoding collaborative information, which can be integrated into LLM embeddings. Formally, for each sample $( u , t , i _ { i d } , l )$ :",
+      "text_zh": "将协同 embedding 集成到 LLM 中。MF [19]、LightGCN [11] 等序列推荐器可用于编码协同信息，并整合进 LLM 的 embedding。形式上，对每个样本 $( u , t , i _ { i d } , l )$：",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_10",
+      "page": 3,
+      "index_on_page": 10,
+      "bbox": [
+        513.0,
+        494.0,
+        913.0,
+        551.0
+      ],
+      "text_en": "where $\\mathbf { e } _ { s } ^ { u } \\in \\mathbb { R } ^ { 1 \\times d 1 }$ denotes the user’s representation with dimension ?? $1 , f _ { \\psi } ( u ; S )$ denotes the process used to obtain this representation, similarly for $i _ { i d }$ . Formally, for an item ?? with the text metadata $i _ { t x t }$ we obtain its textual tokens ${ \\bf { E } } _ { t x t }$ as follows:",
+      "text_zh": "其中 $\\mathbf { e } _ { s } ^ { u } \\in \\mathbb { R } ^ { 1 \\times d 1 }$ 表示用户在维度 $d_1$ 上的表征，$f _ { \\psi } ( u ; S )$ 表示得到该表征的过程，$i_{id}$ 同理。形式上，对于带有文本元数据 $i _ { t x t }$ 的物品 $i$，其文本 token 的 embedding ${ \\bf E } _ { t x t }$ 计算如下：",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_11",
+      "page": 3,
+      "index_on_page": 11,
+      "bbox": [
+        513.0,
+        580.0,
+        913.0,
+        652.0
+      ],
+      "text_en": "where $\\mathrm { T K Z ( \\cdot ) , W E ( \\cdot ) }$ present the LLM tokenizer and word embedding layer, respectively. $\\mathbf { E } _ { t x t } = \\{ \\mathbf { e m } \\mathbf { b } _ { t x t } ^ { 1 : L } \\}$ , where $L$ is the number of tokens and $\\mathbf { e m b } _ { t x t } ^ { 1 } \\in \\mathbb { R } ^ { 1 \\times d _ { 2 } }$ denotes embeddings in the language space with dimension $d _ { 2 }$ . To align collaborative embeddings $\\mathbf { e } _ { s } ^ { i } , \\mathbf { e } _ { s } ^ { u }$ to LLMs’ language space, projector $p r o j _ { \\phi } ( \\cdot )$ is used:",
+      "text_zh": "其中 $\\mathrm { T K Z ( \\cdot ) , W E ( \\cdot ) }$ 分别表示 LLM 的 tokenizer 与 word embedding 层。$\\mathbf { E } _ { t x t } = \\{ \\mathbf { e m b } _ { t x t } ^ { 1 : L } \\}$，$L$ 为 token 数，$\\mathbf { e m b } _ { t x t } ^ { 1 } \\in \\mathbb { R } ^ { 1 \\times d _ { 2 } }$ 表示语言空间中维度为 $d_2$ 的 embedding。为将协同 embedding $\\mathbf { e } _ { s } ^ { i } , \\mathbf { e } _ { s } ^ { u }$ 对齐到 LLM 的语言空间，使用一个 projector $p r o j _ { \\phi } ( \\cdot )$：",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_12",
+      "page": 3,
+      "index_on_page": 12,
+      "bbox": [
+        514.0,
+        688.0,
+        870.0,
+        704.0
+      ],
+      "text_en": "3.2 Thinking Enhanced Recommendation",
+      "text_zh": "3.2 思考增强的推荐",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_13",
+      "page": 3,
+      "index_on_page": 13,
+      "bbox": [
+        513.0,
+        705.0,
+        913.0,
+        750.0
+      ],
+      "text_en": "To align recommendation with language modeling tasks, we highlight the importance of thinking activation for LLMs and propose a framework that consists of data construction and jointly training.",
+      "text_zh": "为了让推荐与语言建模任务对齐，我们强调对 LLM 进行思考激活的重要性，并提出了一个由数据构造与联合训练组成的框架。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_3_14",
+      "page": 3,
+      "index_on_page": 14,
+      "bbox": [
+        511.0,
+        757.0,
+        913.0,
+        896.0
+      ],
+      "text_en": "3.2.1 Reasoning data construction. To support LLMs for more effective reasoning, we need more textual information in addition to item titles. Given that the raw metadata often contains excessive or noisy content, directly using long-form text may hinder the understanding and inference of LLMs. To address this, we leverage a pre-trained summarization model [37] to extract key concepts from the item metadata, and retain up to 10 representative keywords to enhance the semantic representation of each item. To model more comprehensive preference information, not just liking information, we add low-scoring interactions to the history sequence as well.",
+      "text_zh": "3.2.1 推理数据构造。为了支撑 LLM 进行更有效的推理，我们需要在物品标题之外提供更多文本信息。考虑到原始元数据往往冗长或含噪，直接使用长文本会妨碍 LLM 的理解与推断。为此，我们利用一个预训练的摘要模型 [37] 从物品元数据中抽取关键概念，并保留至多 10 个具代表性的关键词以增强物品的语义表征。同时，为了刻画更全面的偏好信息（不只是喜欢的部分），我们也将低评分交互纳入历史序列。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_1",
+      "page": 4,
+      "index_on_page": 1,
+      "bbox": [
+        81.0,
+        489.0,
+        482.0,
+        518.0
+      ],
+      "text_en": "Then we augment each item with title $i _ { t }$ , label $i _ { l } \\in \\{ y e s , n o \\}$ , feature, and keywords $i _ { k }$ as follows:",
+      "text_zh": "随后，我们对每个物品用标题 $i _ { t }$、标签 $i _ { l } \\in \\{ y e s , n o \\}$、特征以及关键词 $i _ { k }$ 进行如下增强：",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_2",
+      "page": 4,
+      "index_on_page": 2,
+      "bbox": [
+        81.0,
+        569.0,
+        482.0,
+        667.0
+      ],
+      "text_en": "Since existing recommendation datasets lack explicit reasoning traces, we synthesize a subset of samples with explainable rationale by leveraging a powerful reasoning model $\\mathsf { Q } \\mathrm { w } \\mathsf { Q } ^ { 1 }$ . Specifically, we sample a few thousand instances from the training data and construct textual prompts according to Appendix B.2. As in Figure 2(b), we then repeatedly query the model until a correct prediction is produced and record the latest explanation content as the reason.",
+      "text_zh": "由于现有推荐数据集缺乏显式的推理轨迹，我们利用强推理模型 $\\mathsf { Q } \\mathrm { w } \\mathsf { Q } ^ { 1 }$ 合成一部分带有可解释 rationale 的样本。具体地，我们从训练数据中采样数千条样本，按照 Appendix B.2 构造文本 prompt；如图 2(b) 所示，反复查询模型直到产生正确预测，并将最后一次的解释内容记录为推理理由。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_3",
+      "page": 4,
+      "index_on_page": 3,
+      "bbox": [
+        81.0,
+        674.0,
+        482.0,
+        813.0
+      ],
+      "text_en": "3.2.2 Thinking activation. To equip the recommendation model with explicit reasoning capability, we introduce a thinking activation mechanism that jointly trains the model on both user–item interactions and synthesized reasoning examples. During training, we perform mixed sampling from conventional recommendation data with binary labels, and reasoning data generated by prompting a reasoning model to produce natural language explanations for user preferences. For each sample, we concatenate the input prompt and its corresponding answer $( i _ { i }$ or $r _ { u , t }$ ) to form a language modeling instance as input for training:",
+      "text_zh": "3.2.2 思考激活。为赋予推荐模型显式的推理能力，我们引入了一种思考激活机制，将用户–物品交互与合成推理样本同时用于训练模型。训练中我们从带二元标签的常规推荐数据，与通过 prompt 推理模型生成自然语言解释得到的推理数据中进行混合采样。对每个样本，我们将输入 prompt 与其对应答案（$i _ { i }$ 或 $r _ { u , t }$）拼接成语言建模实例作为训练输入：",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_4",
+      "page": 4,
+      "index_on_page": 4,
+      "bbox": [
+        81.0,
+        848.0,
+        482.0,
+        876.0
+      ],
+      "text_en": "where ${ \\bf E } ^ { q }$ , ${ \\bf E } ^ { a }$ means embedding of question and answer constructing from $s$ , respectively. While ?????? marked the position of the first",
+      "text_zh": "其中 ${ \\bf E } ^ { q }$、${ \\bf E } ^ { a }$ 分别表示由 $s$ 构造的问题与答案的 embedding；$pos$ 标记了第一个",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_5",
+      "page": 4,
+      "index_on_page": 5,
+      "bbox": [
+        513.0,
+        489.0,
+        911.0,
+        545.0
+      ],
+      "text_en": "answer token. This mixed sampling strategy encourages the model to jointly learn the prediction of the recommendation outcome and the semantic alignment of the reasoning behavior, within a shared representation space, as shown in Figure 2(c).",
+      "text_zh": "答案 token 的位置。如图 2(c) 所示，这种混合采样策略促使模型在共享表征空间中同时学习推荐结果的预测与推理行为的语义对齐。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_6",
+      "page": 4,
+      "index_on_page": 6,
+      "bbox": [
+        513.0,
+        546.0,
+        913.0,
+        588.0
+      ],
+      "text_en": "The overall objective of training optimization consists of two loss components. For thinking instances, the standard token-level cross-entropy loss over the input sequence is used:",
+      "text_zh": "训练优化的总目标由两部分损失组成。对于推理实例，使用对输入序列的标准 token 级 cross-entropy 损失：",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_7",
+      "page": 4,
+      "index_on_page": 7,
+      "bbox": [
+        513.0,
+        614.0,
+        915.0,
+        657.0
+      ],
+      "text_en": "For recommendation instances, we use the standard binary crossentropy (BCE) loss between the predicted relevance score $\\hat { l }$ and the observed ground-truth label ?? of $y$ :",
+      "text_zh": "对于推荐实例，我们使用预测相关性分数 $\\hat { l }$ 与观测到的真实标签 $l$ 之间的标准 binary cross-entropy (BCE) 损失：",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_8",
+      "page": 4,
+      "index_on_page": 8,
+      "bbox": [
+        513.0,
+        713.0,
+        913.0,
+        755.0
+      ],
+      "text_en": "To jointly optimize two objectives within a unified batch, we always use both losses simultaneously, adjusting the weight of each loss according to the instance type:",
+      "text_zh": "为在同一 batch 中联合优化两个目标，我们始终同时使用这两类损失，并根据实例类型调整各自权重：",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_9",
+      "page": 4,
+      "index_on_page": 9,
+      "bbox": [
+        513.0,
+        795.0,
+        913.0,
+        837.0
+      ],
+      "text_en": "$\\alpha , \\beta , \\eta , \\gamma$ are weights for each loss. The model learns not only to rank relevant items but also to generate grounded reasons for its predictions, effectively activating the model’s thinking ability.",
+      "text_zh": "其中 $\\alpha , \\beta , \\eta , \\gamma$ 为各项损失的权重。模型由此不仅学会对相关物品进行排序，还学会为预测生成有依据的理由，从而有效激活模型的思考能力。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_10",
+      "page": 4,
+      "index_on_page": 10,
+      "bbox": [
+        514.0,
+        849.0,
+        828.0,
+        864.0
+      ],
+      "text_en": "3.3 Recommendation Experts Fusion",
+      "text_zh": "3.3 推荐专家融合",
+      "kind": "body"
+    },
+    {
+      "pid": "p_4_11",
+      "page": 4,
+      "index_on_page": 11,
+      "bbox": [
+        513.0,
+        868.0,
+        915.0,
+        896.0
+      ],
+      "text_en": "3.3.1 Base Expert fine-tuning. To enable each expert to better capture user-specific preferences and behavioral patterns, we partition",
+      "text_zh": "3.3.1 Base 专家微调。为了让每个专家更好地捕捉用户特定的偏好与行为模式，我们根据潜在特征将",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_1",
+      "page": 5,
+      "index_on_page": 1,
+      "bbox": [
+        81.0,
+        106.0,
+        480.0,
+        231.0
+      ],
+      "text_en": "users into distinct groups based on latent features. Specifically, we utilize user embeddings derived from various pretrained small collaborative models[5, 26, 45], each of which implicitly encodes the interaction semantics of users. These embeddings serve as the basis for grouping. We aggregate the representations across all users and perform unsupervised clustering to obtain $N$ groups $S ^ { \\prime } = \\{ S _ { 1 : N } \\}$ The resulting clusters are then used to partition the training and validating data, allowing each expert to specialize in a subset of users with similar representations to simplify the preference modeling.",
+      "text_zh": "用户划分为不同的组。具体地，我们利用多种预训练的小型协同模型 [5, 26, 45] 提取用户 embedding，每种 embedding 都隐式地编码了用户的交互语义；这些 embedding 即作为分组依据。我们汇总所有用户的表征并进行无监督聚类，得到 $N$ 个分组 $S ^ { \\prime } = \\{ S _ { 1 : N } \\}$。所得簇被用于划分训练与验证数据，使每个专家可以专门服务于一类表征相近的用户子集，从而简化偏好建模。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_2",
+      "page": 5,
+      "index_on_page": 2,
+      "bbox": [
+        81.0,
+        231.0,
+        482.0,
+        356.0
+      ],
+      "text_en": "We first fine-tune a global expert using all the data in the framework described in Section 3.2.2, employing LoRA-based adaptation to enable generalizable recommendations with thinking[27, 28, 42]. Building on this global expert $\\mathrm { L o R A } _ { g l o b a l }$ , we further fine-tune the selected LoRA layers (the last 8 layers) with grouped data, enabling the model to preserve general thinking capability while adapting to finer-grained user preferences in recommendation. This produces a set of base experts $\\left\\{ \\mathrm { L o R A } _ { 1 : N } \\right\\}$ that act as foundations for user-specific dynamic expert fusion.",
+      "text_zh": "我们首先按照 3.2.2 节描述的框架，使用全部数据通过 LoRA 适配 fine-tune 一个全局专家，使其具备带思考能力的可泛化推荐能力 [27, 28, 42]。在该全局专家 $\\mathrm { L o R A } _ { g l o b a l }$ 的基础上，我们用分组数据进一步 fine-tune 选定的 LoRA 层（最后 8 层），使模型在保留通用思考能力的同时，能针对推荐中的细粒度用户偏好进行适配。这样得到一组 base 专家 $\\left\\{ \\mathrm { L o R A } _ { 1 : N } \\right\\}$，作为面向用户的动态专家融合的基础。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_3",
+      "page": 5,
+      "index_on_page": 3,
+      "bbox": [
+        81.0,
+        366.0,
+        482.0,
+        479.0
+      ],
+      "text_en": "3.3.2 Instance Wise Expert Fusion. To determine which expert is most suitable for a given user, we assign the mean of user features extracted within each group by the corresponding small model as representations of experts $\\mathcal { E } = \\{ { \\bf e } _ { 1 : N } ^ { c } \\}$ . We then compute the match between user features and expert representations to estimate each base expert’s involvement in modeling the user’s preferences. The cosine similarity and softmax functions were used to obtain participation scores $\\mathbf { w } ^ { u } = \\{ w _ { 1 : N } ^ { u } \\}$ of user $u$ based on experts:",
+      "text_zh": "3.3.2 实例级专家融合。为了判断对给定用户最适合的专家，我们将每个分组中由对应小模型抽取的用户特征均值作为该专家的表征 $\\mathcal { E } = \\{ { \\bf e } _ { 1 : N } ^ { c } \\}$。然后计算用户特征与各专家表征的匹配度，估计每个 base 专家对该用户偏好建模的参与度。我们使用 cosine similarity 与 softmax 函数得到用户 $u$ 在各专家上的参与权重 $\\mathbf { w } ^ { u } = \\{ w _ { 1 : N } ^ { u } \\}$：",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_4",
+      "page": 5,
+      "index_on_page": 4,
+      "bbox": [
+        81.0,
+        530.0,
+        482.0,
+        613.0
+      ],
+      "text_en": "where $\\tau$ is the temperature coefficient. We introduce a gating mechanism to filter users with highly averaged $\\mathrm { H } ( \\mathbf { w } ^ { u } ) > 0 . 9 5 \\log N$ or concentrated $\\operatorname* { m a x } ( \\mathbf { w } ^ { u } ) > 0 . 5 + 0 . 6 / N$ preference profiles, assigning them directly to a global or base expert; the remaining users are served by instance-wise fusion over multiple experts as shown in Figure 2(d). The threshold is calculated as follows:",
+      "text_zh": "其中 $\\tau$ 为温度系数。我们引入一个门控机制：对偏好分布过于均匀（$\\mathrm { H } ( \\mathbf { w } ^ { u } ) > 0 . 9 5 \\log N$）或过于集中（$\\operatorname* { m a x } ( \\mathbf { w } ^ { u } ) > 0 . 5 + 0 . 6 / N$）的用户，直接分配到全局或某个 base 专家；其余用户则如图 2(d) 所示，由多个专家进行实例级融合。阈值的计算方式如下：",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_5",
+      "page": 5,
+      "index_on_page": 5,
+      "bbox": [
+        83.0,
+        738.0,
+        256.0,
+        755.0
+      ],
+      "text_en": "3.4 Staged Training",
+      "text_zh": "3.4 分阶段训练",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_6",
+      "page": 5,
+      "index_on_page": 6,
+      "bbox": [
+        81.0,
+        757.0,
+        486.0,
+        896.0
+      ],
+      "text_en": "In this section, we describe the training process. First, we train a global LoRA $\\mathrm { L o R A } _ { g l o b a l }$ on the full dataset under pure text conditions. In parallel, we train a collaborative model $f _ { \\psi } ( \\cdot ; S )$ on the full dataset under ID-based conditions. Next, user features extracted from the collaborative model are used to group the data, and the grouped data are employed to fine-tune the last 8 layers of $\\mathrm { L o R A } _ { g l o b a l }$ yielding a set of base LoRAs $\\left\\{ \\mathrm { L o R A } _ { 1 : N } \\right\\}$ . Finally, leveraging the global dataset with injected collaborative signals, we train a projector $p r o j _ { \\phi } ( \\cdot )$ that projects collaborative embeddings into the LLM language space, while keeping $\\mathrm { L o R A } _ { g l o b a l }$ fixed.",
+      "text_zh": "本节描述训练过程。首先，在纯文本条件下用全数据训练一个全局 LoRA $\\mathrm { L o R A } _ { g l o b a l }$；同时在基于 ID 的条件下用全数据训练一个协同模型 $f _ { \\psi } ( \\cdot ; S )$。然后，从协同模型抽取的用户特征用于对数据分组，并用分组后的数据 fine-tune $\\mathrm { L o R A } _ { g l o b a l }$ 的最后 8 层，得到一组 base LoRA $\\left\\{ \\mathrm { L o R A } _ { 1 : N } \\right\\}$。最后，在保持 $\\mathrm { L o R A } _ { g l o b a l }$ 不变的前提下，使用注入了协同信号的全局数据集训练一个 projector $p r o j _ { \\phi } ( \\cdot )$，将协同 embedding 映射到 LLM 的语言空间。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_7",
+      "page": 5,
+      "index_on_page": 7,
+      "bbox": [
+        514.0,
+        215.0,
+        650.0,
+        231.0
+      ],
+      "text_en": "4 Experiments",
+      "text_zh": "4 实验",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_8",
+      "page": 5,
+      "index_on_page": 8,
+      "bbox": [
+        511.0,
+        234.0,
+        913.0,
+        304.0
+      ],
+      "text_en": "We conduct experiments on real-world datasets to answer three main research questions: RQ1: How does ThinkRec perform in comparison to existing recommendation methods? RQ2: Why is the thinking activation method in ThinkRec essential? RQ3: How does the fusion of experts influence recommendation performance?",
+      "text_zh": "我们在真实数据集上进行实验以回答三个主要研究问题：RQ1：ThinkRec 与已有推荐方法相比表现如何？RQ2：ThinkRec 中的思考激活方法为何是必要的？RQ3：专家融合机制对推荐性能有何影响？",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_9",
+      "page": 5,
+      "index_on_page": 9,
+      "bbox": [
+        513.0,
+        319.0,
+        720.0,
+        335.0
+      ],
+      "text_en": "4.1 Experimental Setup",
+      "text_zh": "4.1 实验设置",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_10",
+      "page": 5,
+      "index_on_page": 10,
+      "bbox": [
+        511.0,
+        337.0,
+        913.0,
+        571.0
+      ],
+      "text_en": "4.1.1 Datasets. We conduct experiments on three datasets: ML1M (MovieLens-1M)2, Yelp (Yelp Open Dataset)3, and Book (the “Book” subset of the Amazon Product Review dataset)4. To better simulate real-world recommendation scenarios and avoid data leakage [15], we split each dataset into training, validation, and testing sets according to interaction timestamps. Specifically, for Amazon-Book, due to its large scale, we retain interactions from 2017 only, using the first 10 months for training and the last 2 months for validation and testing. For Yelp, we retain interactions from 2010 to 2022, assigning the first 10 years to training and the last 2 years to validation and testing. For ML1M, we keep interactions from the most recent 20 months, with the first 10 months for training and the remaining 10 months for validation and testing. To address sparsity in Book and Yelp, we filter out users and items with fewer than 20 interactions. The statistics of the processed datasets are summarized in Table 1, where $\\mu$ and $\\sigma$ denote the mean and standard deviation of user interactions, respectively.",
+      "text_zh": "4.1.1 数据集。我们在三个数据集上进行实验：ML1M（MovieLens-1M）、Yelp（Yelp Open Dataset）以及 Book（Amazon 商品评论数据集中的 \"Book\" 子集）。为了更好地模拟真实推荐场景并避免数据泄露 [15]，我们按交互时间戳将每个数据集划分为训练、验证、测试集。具体而言：Amazon-Book 规模较大，仅保留 2017 年的交互数据，其中前 10 个月用于训练、后 2 个月用于验证与测试；Yelp 保留 2010–2022 年的交互，前 10 年训练、后 2 年验证与测试；ML1M 保留最近 20 个月的交互，前 10 个月训练、后 10 个月验证与测试。为缓解 Book 与 Yelp 中的稀疏性，我们过滤掉交互少于 20 次的用户与物品。处理后的数据统计如表 1 所示，其中 $\\mu$、$\\sigma$ 分别表示用户交互的均值与标准差。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_11",
+      "page": 5,
+      "index_on_page": 11,
+      "bbox": [
+        511.0,
+        571.0,
+        913.0,
+        726.0
+      ],
+      "text_en": "Regarding labels, ML1M contains user ratings on movies, collected between 2000 and 2003, with ratings on a scale of 1 to 5. We convert these ratings into binary labels using a threshold of 3. Yelp includes user reviews, ratings for businesses such as restaurants and retail shops, as well as textual information about the businesses. We convert these ratings into binary labels using a threshold of 3. Book compiles user reviews of books from Amazon, collected between 1996 and 2018, with review scores ranging from 1 to 5. We transform these review scores into binary labels using a threshold of 4. Ratings greater than the threshold are labeled as “positive” (y $= 1 \\stackrel { \\cdot } { }$ ), while the rest are labeled as “negative” $( \\mathrm { y } = 0 )$ ).",
+      "text_zh": "在标签方面：ML1M 包含 2000–2003 年间用户对电影的 1–5 分评分，我们以 3 为阈值将其转为二元标签；Yelp 包含用户对餐厅、零售店等商家的评论与评分以及商家文本信息，同样以 3 为阈值转为二元标签；Book 收集了 1996–2018 年间 Amazon 上用户对书籍的评分（1–5 分），以 4 为阈值转为二元标签。大于阈值的标记为正样本（$y=1$），其余为负样本（$y=0$）。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_5_12",
+      "page": 5,
+      "index_on_page": 12,
+      "bbox": [
+        513.0,
+        734.0,
+        913.0,
+        762.0
+      ],
+      "text_en": "4.1.2 Baselines. To fully evaluate the proposed method ThinkRec, we compare it with traditional methods and LLM-based methods:",
+      "text_zh": "4.1.2 Baseline。为了全面评估 ThinkRec，我们将其与传统方法及基于 LLM 的方法进行对比：",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_1",
+      "page": 6,
+      "index_on_page": 1,
+      "bbox": [
+        81.0,
+        496.0,
+        480.0,
+        525.0
+      ],
+      "text_en": "We extend the above LLM-based method to LLM Llama3- $\\cdot 8 \\mathrm { B } ^ { 5 }$ for a fair comparison and tune the LLM with LoRA to manage costs.",
+      "text_zh": "为公平起见，我们将上述 LLM 方法统一扩展到 LLM Llama3-8B，并使用 LoRA 对 LLM 进行微调以控制成本。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_2",
+      "page": 6,
+      "index_on_page": 2,
+      "bbox": [
+        81.0,
+        531.0,
+        482.0,
+        614.0
+      ],
+      "text_en": "4.1.3 Evaluation Metrics. We employ four widely used recommendation metrics: AUC, UAUC, Normalized Discounted Cumulative Gain (NDCG), and Mean Average Precision (MAP). And we employ METEOR [1] and BLEURT [32] to measure the generated reasons. METEOR incorporates synonym matching and word order. BLEURT is fine-tuned on human judgments to directly predict text quality.",
+      "text_zh": "4.1.3 评估指标。我们使用四种常用的推荐指标：AUC、UAUC、Normalized Discounted Cumulative Gain (NDCG) 与 Mean Average Precision (MAP)。我们使用 METEOR [1] 与 BLEURT [32] 来衡量生成的推荐理由：METEOR 考虑同义词匹配与词序，BLEURT 在人工评测上 fine-tune，可直接预测文本质量。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_3",
+      "page": 6,
+      "index_on_page": 3,
+      "bbox": [
+        81.0,
+        622.0,
+        482.0,
+        761.0
+      ],
+      "text_en": "4.1.4 Implementation Details. We implement all the compared methods using PyTorch 2.5. We adopt BCE when not otherwise specified. LLM-based methods are optimized using AdamW, while other models use Adam. For hyperparameters such as learning rate, embedding size, and weight decay of traditional methods, we conduct grid search over commonly used ranges, and follow the original papers for other baseline-specific settings. For LLM-based methods, we adopt CoLLM’s configuration for optimizer, sequence truncation and LoRA settings. Full hyperparameter settings and search ranges are provided in the Appendix D.",
+      "text_zh": "4.1.4 实现细节。所有对比方法均基于 PyTorch 2.5 实现。如无特别说明默认使用 BCE 损失。基于 LLM 的方法使用 AdamW 优化，其余模型使用 Adam。对于传统方法的学习率、embedding 维度、weight decay 等超参数，我们在常用范围内做网格搜索，其余 baseline 特有设置遵循其原论文。对于 LLM 方法，optimizer、序列截断与 LoRA 设置均沿用 CoLLM。完整超参数与搜索范围详见 Appendix D。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_4",
+      "page": 6,
+      "index_on_page": 4,
+      "bbox": [
+        83.0,
+        772.0,
+        349.0,
+        787.0
+      ],
+      "text_en": "4.2 Overall Performance (RQ1)",
+      "text_zh": "4.2 整体效果（RQ1）",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_5",
+      "page": 6,
+      "index_on_page": 5,
+      "bbox": [
+        81.0,
+        791.0,
+        480.0,
+        875.0
+      ],
+      "text_en": "4.2.1 Accuracy of Recommendation. The results of ThinkRec and SOTA recommendations are in Table 2. We observe improvement in our method on all three datasets. Notably, ThinkRec improves the previous SOTA CoLLM by +.0582 $( 9 . 1 3 \\% )$ on AUC in Yelp and $+ . 0 6 2 3$ $( 8 . 7 2 \\% )$ on AUC in ML1M, demonstrating substantial gains in global ranking accuracy. CoLLM, which integrates collaborative",
+      "text_zh": "4.2.1 推荐准确性。ThinkRec 与 SOTA 方法的对比结果见表 2。ThinkRec 在三个数据集上均有提升，尤其在 Yelp 上 AUC 比此前的 SOTA CoLLM 高出 +.0582（$9.13\\%$），在 ML1M 上 AUC 高出 +.0623（$8.72\\%$），在全局排序准确率上获得显著提升。CoLLM 通过外部传统模型将协同",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_6",
+      "page": 6,
+      "index_on_page": 6,
+      "bbox": [
+        511.0,
+        300.0,
+        913.0,
+        382.0
+      ],
+      "text_en": "signals into LLMs using external traditional models, achieves the second-best AUC on ML1M (0.7141) and Book (0.7830), confirming its effectiveness in leveraging user–item interaction patterns. However, its performance in user-level ranking metrics is relatively less competitive, especially on ML1M and Yelp, where ThinkRec offers more personalized modeling through instance-wise expert fusion.",
+      "text_zh": "信号注入 LLM，在 ML1M（0.7141）与 Book（0.7830）上取得次优 AUC，证明了其在利用用户–物品交互模式上的有效性；但其在用户级排序指标上相对欠竞争力，尤其在 ML1M 与 Yelp 上，ThinkRec 通过实例级专家融合提供了更个性化的建模。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_7",
+      "page": 6,
+      "index_on_page": 7,
+      "bbox": [
+        511.0,
+        383.0,
+        913.0,
+        493.0
+      ],
+      "text_en": "Other LLM-based methods, such as Prompt4NR and TALLRec, also demonstrate competitive performance, particularly on datasets with rich textual item metadata such as Book. For instance, TALLRec achieves the highest NDCG@5 (0.7683) on ML1M among all methods except ThinkRec, and both TALLRec and Prompt4NR slightly outperform ThinkRec in MAP@5 on Book. These results suggest that instruction tuning and prompt engineering are beneficial when item descriptions provide substantial semantic context.",
+      "text_zh": "Prompt4NR、TALLRec 等其他 LLM 方法也展现出有竞争力的表现，特别是在 Book 这种文本元数据丰富的数据集上：例如 TALLRec 在 ML1M 上取得了除 ThinkRec 之外最高的 NDCG@5（0.7683），而在 Book 的 MAP@5 上 TALLRec 与 Prompt4NR 都略胜 ThinkRec。这说明在物品描述本身具备充分语义上下文的情况下，instruction tuning 与 prompt 工程是有益的。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_8",
+      "page": 6,
+      "index_on_page": 8,
+      "bbox": [
+        511.0,
+        494.0,
+        913.0,
+        618.0
+      ],
+      "text_en": "Turning to traditional recommendation models, SASRec clearly outperforms MF and LightGCN, especially on ML1M and Yelp. Its self-attention-based sequential modeling effectively captures temporal patterns in user behavior, yielding the best UAUC (0.6687) and MAP@5 (0.4747) among non-LLM baselines on ML1M. However, its performance declines significantly on the Book dataset, where user interactions are sparser and exhibit weaker sequential patterns, revealing the inherent limitations of models that rely solely on sequential behavior modeling.",
+      "text_zh": "在传统推荐模型中，SASRec 明显优于 MF 与 LightGCN，尤其在 ML1M 与 Yelp 上。其基于 self-attention 的序列建模能够有效捕捉用户行为中的时序模式，在 ML1M 的非 LLM 基线中获得最优的 UAUC（0.6687）与 MAP@5（0.4747）；但在 Book 上其性能显著下滑，因为该数据集交互更稀疏且时序模式更弱，这暴露了仅依赖序列行为建模的方法的固有局限。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_9",
+      "page": 6,
+      "index_on_page": 9,
+      "bbox": [
+        511.0,
+        619.0,
+        913.0,
+        729.0
+      ],
+      "text_en": "Overall, ThinkRec delivers the most balanced and robust performance across all datasets and evaluation metrics. It achieves the best performance of almost all metrics on ML1M and Yelp, and also obtains the top AUC and UAUC on Book. Its consistent top-tier results confirm the effectiveness of combining thinking activation and instance-wise expert fusion. These components jointly enhance both global and user-specific ranking quality, making ThinkRec a scalable and interpretable recommendation.",
+      "text_zh": "总体而言，ThinkRec 在所有数据集与指标上都表现最为均衡和稳健：在 ML1M 与 Yelp 上几乎所有指标都取得最佳，在 Book 上也取得了最佳的 AUC 与 UAUC。这种持续的领先表现验证了思考激活与实例级专家融合相结合的有效性——这两者共同提升了全局与用户级的排序质量，使 ThinkRec 成为一个可扩展且可解释的推荐方法。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_6_10",
+      "page": 6,
+      "index_on_page": 10,
+      "bbox": [
+        511.0,
+        743.0,
+        915.0,
+        896.0
+      ],
+      "text_en": "4.2.2 Quality of Generated Reasons. Table 3 summarizes the quality of the reasons generated by the LLM-based recommenders. Compared with the generated reasons from QwQ using the METEOR and BLEURT metrics, the reasons generated by our method significantly outperform those of the three LLM-based baselines. Our method achieves an average relative improvement of $5 6 . 5 4 \\%$ o n METEOR and $2 3 . 3 5 \\%$ on BLEURT across all datasets, suggesting better fluency, coherence, and semantic relevance. These results validate the effectiveness of our thinking activation mechanism, which explicitly aligns recommendations with user-centric reasoning via joint training on reasoning-augmented samples. The improvement",
+      "text_zh": "4.2.2 生成理由的质量。表 3 总结了不同 LLM 推荐方法生成理由的质量。在 METEOR 与 BLEURT 指标下与 QwQ 生成的参考理由相比，ThinkRec 的生成结果显著优于三个 LLM 基线：在所有数据集上，METEOR 平均相对提升 $56.54\\%$，BLEURT 平均相对提升 $23.35\\%$，意味着更优的流畅性、连贯性与语义相关性。这验证了我们的思考激活机制的有效性——通过对推理增强样本的联合训练，将推荐显式地与以用户为中心的推理对齐。这种",
+      "kind": "body"
+    },
+    {
+      "pid": "p_7_1",
+      "page": 7,
+      "index_on_page": 1,
+      "bbox": [
+        81.0,
+        537.0,
+        482.0,
+        594.0
+      ],
+      "text_en": "in both syntactic and semantic metrics confirms that ThinkRec not only provides accurate recommendations but also produces more coherent, grounded, and human-aligned explanations, a crucial step toward reasonable and trustworthy LLM-based recommendations.",
+      "text_zh": "在句法与语义指标上的同步提升表明，ThinkRec 不仅能给出准确的推荐，还能产出更连贯、更有依据、更贴近人类判断的解释，是迈向合理且可信的 LLM 推荐的关键一步。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_7_2",
+      "page": 7,
+      "index_on_page": 2,
+      "bbox": [
+        81.0,
+        601.0,
+        482.0,
+        713.0
+      ],
+      "text_en": "4.2.3 Case Study. Among existing LLM-based recommendations, CoLLM and Prompt4NR yield disorganized symbols. TALLRec frequently generates sentences with unrelated elements, such as code or hallucinated facts, failing to reflect coherent reasoning. In contrast, ThinkRec demonstrates structured, step-by-step reasoning aligned with user history and target item semantics, enabling it to produce accurate and interpretable recommendations. A real example is listed in the Appendix C.",
+      "text_zh": "4.2.3 Case Study。在已有 LLM 推荐方法中，CoLLM 与 Prompt4NR 输出杂乱的符号串；TALLRec 经常生成包含无关元素（如代码或幻觉事实）的句子，无法体现连贯的推理。相比之下，ThinkRec 展现出与用户历史和目标物品语义对齐的、结构化、循序渐进的推理，能够给出准确且可解释的推荐。一个真实示例见 Appendix C。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_7_3",
+      "page": 7,
+      "index_on_page": 3,
+      "bbox": [
+        83.0,
+        724.0,
+        274.0,
+        739.0
+      ],
+      "text_en": "4.3 In-depth Analysis",
+      "text_zh": "4.3 深入分析",
+      "kind": "body"
+    },
+    {
+      "pid": "p_7_4",
+      "page": 7,
+      "index_on_page": 4,
+      "bbox": [
+        81.0,
+        743.0,
+        482.0,
+        896.0
+      ],
+      "text_en": "4.3.1 Ablation Studies (RQ2). To evaluate the importance of explicit reasoning in recommendation, we ablate the \"thinking\" component of ThinkRec, which disables reasoning supervision (w/o think). As shown in Table 4, this leads to significant performance degradation in all datasets. For example, UAUC on the Book dataset drops from 0.5705 to 0.4692. Interestingly, this is even lower than the variant in which both thinking and expert mechanisms are removed (w/o both). This counterintuitive result suggests that, in the absence of thinking, the recommendation task degenerates into binary classification, where multi-expert modeling risks overfitting superficial interactions and thereby undermining generalization.",
+      "text_zh": "4.3.1 消融实验（RQ2）。为评估显式推理在推荐中的重要性，我们移除 ThinkRec 的 \"思考\" 组件、关闭推理监督（w/o think）。如表 4 所示，所有数据集上的性能都显著下降，例如 Book 数据集上的 UAUC 从 0.5705 降至 0.4692，甚至低于同时移除思考与专家机制的变体（w/o both）。这一反直觉的结果说明，在缺乏思考的情况下推荐任务退化为二元分类，多专家建模反而容易过拟合表层交互模式，损害泛化。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_7_5",
+      "page": 7,
+      "index_on_page": 5,
+      "bbox": [
+        511.0,
+        373.0,
+        913.0,
+        566.0
+      ],
+      "text_en": "We then assess the contribution of the expert personalization module, which removes the latent-feature-based user grouping and experts fusion mechanism (w/o experts). As shown in Table 4, this also leads to consistent performance drops—for instance, MAP@5 on Yelp falls from 0.2826 to 0.2791. Notably, only when thinking is enabled does multi-expert modeling begin to show substantial benefits. With reasoning supervision, group-specific LoRA modules can effectively specialize in distinct user groups, capturing finegrained preference signals that would otherwise be blurred in the global model. These findings highlight the consistency and complementarity between thinking and multi-expert modeling, providing a semantically rich space that allows user grouping to generalize rather than overfit, enabling expert models to move beyond surface interaction patterns and capture deeper preference semantics.",
+      "text_zh": "随后我们评估专家个性化模块的贡献，移除基于潜在特征的用户分组与专家融合机制（w/o experts）。如表 4 所示，性能同样持续下降，例如 Yelp 上 MAP@5 从 0.2826 降至 0.2791。值得注意的是，只有在启用思考时多专家建模才能展现出实质性收益：有了推理监督，分组特定的 LoRA 模块才能真正聚焦于不同用户群体，捕捉到那些在全局模型中会被模糊化的细粒度偏好信号。这表明思考与多专家建模之间高度一致且互补——推理提供的语义丰富空间使用户分组得以泛化而非过拟合，使专家模型能超越表层交互、刻画更深层的偏好语义。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_7_6",
+      "page": 7,
+      "index_on_page": 6,
+      "bbox": [
+        514.0,
+        575.0,
+        779.0,
+        589.0
+      ],
+      "text_en": "4.3.2 Study on the Fusion of Experts (RQ3).",
+      "text_zh": "4.3.2 专家融合分析（RQ3）。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_7_7",
+      "page": 7,
+      "index_on_page": 7,
+      "bbox": [
+        511.0,
+        597.0,
+        913.0,
+        791.0
+      ],
+      "text_en": "Necessity of multiple experts. As shown in Figure 3, ThinkRec achieves clear improvements at the optimal number of expert groups (2–3), particularly in UAUC. Prior works[10, 51] emphasize UAUC as a key performance indicator, where even small gains are considered valuable in practice. In real-world scenarios. Moreover, the multi-expert design improves robustness by capturing diverse user behaviors and enables modular expansion without retraining the full model. We divided the Book dataset into three groups: two groups of original data and one group of newly introduced data. We then tested the performance of the unified and multi-expert models separately. As shown in Table 5, updating only the unified model parameters provides minimal improvement as the number of users increases. In contrast, the multi-expert model has higher original metrics and shows greater improvement.",
+      "text_zh": "多专家的必要性。如图 3 所示，ThinkRec 在专家组数为 2–3 的最优设置下取得明显提升，尤其在 UAUC 上更为显著。已有工作 [10, 51] 强调 UAUC 是关键性能指标，在实际场景中即便是小幅提升也具备重要价值。此外，多专家设计通过捕捉多样的用户行为提升了鲁棒性，并支持模块化扩展、无需重训整个模型。我们将 Book 数据集划分为三组：两组原始数据加上一组新引入的数据，并分别测试统一模型与多专家模型的表现。如表 5 所示，仅更新统一模型参数时，随着用户数增加性能提升十分有限；相比之下，多专家模型不仅初始指标更高，提升幅度也更大。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_7_8",
+      "page": 7,
+      "index_on_page": 8,
+      "bbox": [
+        511.0,
+        797.0,
+        913.0,
+        896.0
+      ],
+      "text_en": "Analysis of the number of experts. As shown in Figure 3, the number of expert groups increases from 1 to 4, the model exhibits a characteristic ’rise-then-fall’ performance trend, revealing the trade-off between personalization capacity and generalization. In the early stages, fine-tuning LoRA modules within user groups significantly enhances the model’s ability to capture diverse preferences, resulting in notable gains in user-level and Top-N ranking",
+      "text_zh": "专家数量的分析。如图 3 所示，当专家组数从 1 增加到 4 时，模型呈现出典型的 \"先升后降\" 趋势，揭示了个性化能力与泛化能力之间的权衡。早期阶段，在用户分组内 fine-tune LoRA 模块显著增强了模型刻画多样偏好的能力，使用户级和 Top-N 排序",
+      "kind": "body"
+    },
+    {
+      "pid": "p_8_1",
+      "page": 8,
+      "index_on_page": 1,
+      "bbox": [
+        84.0,
+        356.0,
+        480.0,
+        507.0
+      ],
+      "text_en": "metrics such as UAUC, NDCG@5, and MAP. However, with further partitioning, each subgroup receives fewer training samples, making the model prone to overfitting, thereby degrading ranking performance. Notably, the AUC metric consistently decreases with more experts, reflecting the deterioration of the consistency of global representation with expert specialization, validating the inherent tension between \"global consistency\" and \"local specificity\" in recommender systems. These results indicate that more experts do not necessarily equate to better performance; instead, the optimal group number should be dynamically adjusted according to user behavior diversity, and the frequency of interactions.",
+      "text_zh": "指标（如 UAUC、NDCG@5、MAP）大幅提升。然而当继续细分时，每个子组得到的训练样本变少，模型容易过拟合、排序性能反而下降。值得一提的是 AUC 指标会随着专家数量增加而持续下降，这反映了全局表征一致性与专家专门化之间的权衡，验证了推荐系统中 \"全局一致性\" 与 \"局部特异性\" 之间固有的张力。这些结果说明：专家数并非越多越好，最优分组数应根据用户行为的多样性与交互频度动态调整。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_8_2",
+      "page": 8,
+      "index_on_page": 2,
+      "bbox": [
+        86.0,
+        529.0,
+        480.0,
+        736.0
+      ],
+      "text_en": "Analysis of the grouping features. Under a fixed two-group setting, we further investigate how the choice of user grouping features affects model performance. We employ user embeddings generated by MF, LightGCN, and SASRec to construct different grouping strategies. As shown in Figure 4, with the increase of group difference (Cohen’s d), the performance of ThinkRec consistently improves. This trend highlights the importance of semantic decoupling among expert groups. When user preferences across groups exhibit stronger heterogeneity, the LoRA modules assigned to each group can learn more complementary preference representations, thereby enhancing the system’s modeling capacity and global discriminative power. Therefore, leveraging high-quality user behavior modeling methods as the basis for grouping can amplify divergence across groups, enabling multi-expert systems to achieve better personalized expressiveness while preserving a global perspective.",
+      "text_zh": "分组特征的分析。在固定为两组的设置下，我们进一步研究用户分组特征的选择对模型性能的影响。我们使用 MF、LightGCN 与 SASRec 生成的用户 embedding 来构造不同的分组策略。如图 4 所示，随着分组之间差异（Cohen's d）的增大，ThinkRec 的性能持续提升。这一趋势凸显了专家组之间语义解耦的重要性：当不同组用户偏好的异质性更强时，分配给各组的 LoRA 模块能学到更互补的偏好表征，从而增强系统的建模能力与全局判别力。因此，使用高质量的用户行为建模方法作为分组依据，可以放大组间差异，使多专家系统在保持全局视野的同时获得更强的个性化表达力。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_8_3",
+      "page": 8,
+      "index_on_page": 3,
+      "bbox": [
+        86.0,
+        744.0,
+        480.0,
+        895.0
+      ],
+      "text_en": "4.3.3 Cross-Domain Generalization. In practical recommender systems, distinct models are often deployed for different domains due to significant variations in user behavior across scenarios. In multidomain settings, a single model is typically trained on a mixture of item types to handle all cases. In contrast, ThinkRec introduces a more nuanced strategy: each base expert is trained on data grouped by user latent features that are specific to the target domain, allowing the model to capture fine-grained, domain-specific preference patterns while maintaining a unified reasoning backbone. To rigorously evaluate cross-domain generalization, we conducted experiments using the global expert. Specifically, we test the metrics",
+      "text_zh": "4.3.3 跨域泛化。在实际推荐系统中，由于不同场景下用户行为差异显著，往往会为不同领域部署不同模型。在多领域设置下，通常会用混合的物品类型训练单一模型来覆盖所有情况。相反，ThinkRec 提出了一种更精细的策略：每个 base 专家由按目标领域特定的潜在用户特征分组的数据训练得到，使模型能够在保持统一推理骨架的同时刻画细粒度、领域特定的偏好模式。为严格评估跨域泛化能力，我们使用全局专家进行实验：具体地，先在各数据集自身上",
+      "kind": "body"
+    },
+    {
+      "pid": "p_8_4",
+      "page": 8,
+      "index_on_page": 4,
+      "bbox": [
+        517.0,
+        229.0,
+        911.0,
+        353.0
+      ],
+      "text_en": "in the datasets themselves and use experts trained on the ML1M dataset to test the metrics on the Book and Yelp datasets, as shown in Table 6. The results demonstrate that the reasoning paths learned from ML1M transfer effectively to other domains, retaining more than $9 0 \\%$ of the performance achieved with domain-specific training. This demonstrates ThinkRec’s strong generalization capacity and its ability to leverage shared reasoning structures across diverse web environments, reducing the need for domain-specific retraining while maintaining robust recommendation quality.",
+      "text_zh": "测试指标，再用在 ML1M 上训练的专家在 Book 与 Yelp 数据集上测试指标，结果如表 6 所示。结果表明，从 ML1M 学到的推理路径能够有效迁移到其他领域，仍能保留领域内训练所获性能的 $90\\%$ 以上。这显示了 ThinkRec 强大的泛化能力，以及在不同 web 环境下复用共享推理结构的能力，从而在保持稳健推荐质量的同时减少对领域特定再训练的需求。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_8_5",
+      "page": 8,
+      "index_on_page": 5,
+      "bbox": [
+        517.0,
+        359.0,
+        911.0,
+        484.0
+      ],
+      "text_en": "4.3.4 Inference Efficiency. Although ThinkRec leverages multiple LoRA-tuned experts during training, inference requires only a single LLM forward pass with the fused LoRA adapter (via weighted sum of a few small matrices), and a lightweight gating computation over user embeddings. Because LoRA adapters add only a small fraction $( < ~ 1 . 5 \\% )$ of extra parameters and incur negligible runtime overhead, the overall latency increase is minimal (empirically $< 1 0 \\%$ relative to a standard LoRA-tuned LLM) while delivering substantially richer, interpretable outputs.",
+      "text_zh": "4.3.4 推理效率。尽管 ThinkRec 在训练时利用了多个 LoRA 微调的专家，推理阶段只需一次 LLM 前向传递（通过对若干小矩阵加权求和得到融合后的 LoRA adapter），加上一次基于用户 embedding 的轻量级门控计算。由于 LoRA adapter 仅引入很小一部分（$<1.5\\%$）额外参数、运行时开销可忽略，整体延迟增加非常有限（实验中相对于标准 LoRA-tuned LLM $<10\\%$），却能产出更丰富、更可解释的输出。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_8_6",
+      "page": 8,
+      "index_on_page": 6,
+      "bbox": [
+        517.0,
+        497.0,
+        637.0,
+        511.0
+      ],
+      "text_en": "5 Conclusion",
+      "text_zh": "5 结论",
+      "kind": "body"
+    },
+    {
+      "pid": "p_8_7",
+      "page": 8,
+      "index_on_page": 7,
+      "bbox": [
+        517.0,
+        515.0,
+        911.0,
+        750.0
+      ],
+      "text_en": "The core contribution of this research is advancing LLM-based recommendation systems from an intuitive, matching-based \"System 1\" paradigm to a \"System 2\" paradigm characterized by explicit reasoning. Through our proposed thinking activation mechanism and instance-wise expert fusion strategy, ThinkRec deeply couples the recommendation task with the reasoning capabilities of language models. Experimental results confirm that this approach not only significantly improves recommendation accuracy but, crucially, enhances system transparency and user trust by generating traceable reasons. We believe that future research will move towards deeper cognitive insights or exploring training-free mechanisms like activation steering for personalized reasoning[16], enabling systems to perform more rigorous logical reasoning. Moreover, based on the principles of automatic and personalized selection, deeper levels of Collective Intelligence, such as in Multi-Agent Systems, can be explored. ThinkRec builds a solid bridge for this leap. We provide the ethical use of data in Appendix A.",
+      "text_zh": "本研究的核心贡献是将基于 LLM 的推荐系统从直觉式、基于匹配的 \"System 1\" 范式推向以显式推理为特征的 \"System 2\" 范式。通过我们提出的思考激活机制与实例级专家融合策略，ThinkRec 将推荐任务与语言模型的推理能力深度耦合。实验结果证实，这一方法不仅显著提升了推荐准确率，更为重要的是通过生成可追溯的理由增强了系统透明度与用户信任。我们相信，未来研究将朝向更深层的认知洞察，或探索 activation steering [16] 等无需训练的个性化推理机制，使系统能够进行更严格的逻辑推理；此外，基于自动化、个性化选择的原则，更深层次的集体智能（如 Multi-Agent 系统）也值得探索。ThinkRec 为这一跃迁搭建了坚实的桥梁。我们关于数据使用的伦理说明见 Appendix A。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_8_8",
+      "page": 8,
+      "index_on_page": 8,
+      "bbox": [
+        517.0,
+        762.0,
+        668.0,
+        777.0
+      ],
+      "text_en": "Acknowledgments",
+      "text_zh": "致谢",
+      "kind": "body"
+    },
+    {
+      "pid": "p_8_9",
+      "page": 8,
+      "index_on_page": 9,
+      "bbox": [
+        517.0,
+        781.0,
+        911.0,
+        890.0
+      ],
+      "text_en": "This work was supported by National Natural Science Foundation of China (No. 62402429, U24A20326, 62441236), the Key Research and Development Program of Zhejiang Province (No. 2025C01026, 2024C03270), Ningbo Yongjiang Talent Introduction Programme (2023A-397-G), Young Elite Scientists Sponsorship Program by CAST (2024QNRC001), and partially supported by MYbank, Ant Group. The author gratefully acknowledges the support of Zhejiang University Education Foundation Qizhen Scholar Foundation.",
+      "text_zh": "本工作由国家自然科学基金（编号 62402429、U24A20326、62441236）、浙江省重点研发计划（编号 2025C01026、2024C03270）、宁波市甬江引才工程（2023A-397-G）、CAST 青年人才托举工程（2024QNRC001）资助，部分由蚂蚁集团 MYbank 支持。作者特别感谢浙江大学教育基金会启真学者基金的支持。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_10_1",
+      "page": 10,
+      "index_on_page": 1,
+      "bbox": [
+        514.0,
+        244.0,
+        733.0,
+        258.0
+      ],
+      "text_en": "A Ethical Considerations",
+      "text_zh": "A 伦理考虑",
+      "kind": "body"
+    },
+    {
+      "pid": "p_10_2",
+      "page": 10,
+      "index_on_page": 2,
+      "bbox": [
+        513.0,
+        263.0,
+        913.0,
+        361.0
+      ],
+      "text_en": "We use only publicly available benchmark datasets (e.g., ML1M, Yelp, Book) that are widely adopted in the recommendation community. These datasets do not contain any personally identifiable information (PII) or sensitive attributes, and our study does not involve human participants or subjects, thus not requiring informed consent. All data usage strictly complies with ACM’s Publications Policy on Research Involving Human Participants and Subjects.",
+      "text_zh": "我们仅使用推荐领域广泛采用的公开 benchmark 数据集（如 ML1M、Yelp、Book），这些数据集不包含任何可识别个人身份的信息（PII）或敏感属性，且本研究不涉及人类受试者，因此无需获取知情同意。所有数据使用均严格遵守 ACM 关于涉及人类受试者研究的出版政策。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_10_3",
+      "page": 10,
+      "index_on_page": 3,
+      "bbox": [
+        514.0,
+        378.0,
+        697.0,
+        393.0
+      ],
+      "text_en": "B Prompt Templates",
+      "text_zh": "B Prompt 模板",
+      "kind": "body"
+    },
+    {
+      "pid": "p_10_4",
+      "page": 10,
+      "index_on_page": 4,
+      "bbox": [
+        514.0,
+        398.0,
+        844.0,
+        414.0
+      ],
+      "text_en": "B.1 Prompt for Summarizing Metadata",
+      "text_zh": "B.1 用于元数据摘要的 Prompt",
+      "kind": "body"
+    },
+    {
+      "pid": "p_10_5",
+      "page": 10,
+      "index_on_page": 5,
+      "bbox": [
+        540.0,
+        426.0,
+        647.0,
+        439.0
+      ],
+      "text_en": "Summarization",
+      "text_zh": "Summarization",
+      "kind": "body"
+    },
+    {
+      "pid": "p_10_6",
+      "page": 10,
+      "index_on_page": 6,
+      "bbox": [
+        539.0,
+        441.0,
+        887.0,
+        496.0
+      ],
+      "text_en": "Your task is to extract up to ten keywords from the given profile of the book above. Answers should contain only keywords, which should be separated by commas. Keywords:",
+      "text_zh": "你的任务是从上文给出的图书简介中抽取最多十个关键词。回答只能包含关键词，并以逗号分隔。Keywords：",
+      "kind": "body"
+    },
+    {
+      "pid": "p_10_7",
+      "page": 10,
+      "index_on_page": 7,
+      "bbox": [
+        514.0,
+        525.0,
+        864.0,
+        541.0
+      ],
+      "text_en": "B.2 Prompt for Reasoning Data Synthesis",
+      "text_zh": "B.2 用于推理数据合成的 Prompt",
+      "kind": "body"
+    },
+    {
+      "pid": "p_10_8",
+      "page": 10,
+      "index_on_page": 8,
+      "bbox": [
+        540.0,
+        555.0,
+        612.0,
+        566.0
+      ],
+      "text_en": "First Turn",
+      "text_zh": "First Turn",
+      "kind": "body"
+    },
+    {
+      "pid": "p_10_9",
+      "page": 10,
+      "index_on_page": 9,
+      "bbox": [
+        539.0,
+        568.0,
+        888.0,
+        625.0
+      ],
+      "text_en": "A user has given high ratings to the following books: <HisItemList>. Using all available information, make a prediction about whether the user would enjoy the book titled <TargetItemTitle>?",
+      "text_zh": "用户对以下图书给出了高分评价：<HisItemList>。请综合所有可用信息，预测该用户是否会喜欢标题为 <TargetItemTitle> 的图书？",
+      "kind": "body"
+    },
+    {
+      "pid": "p_10_10",
+      "page": 10,
+      "index_on_page": 10,
+      "bbox": [
+        540.0,
+        659.0,
+        629.0,
+        671.0
+      ],
+      "text_en": "Reflect Turn",
+      "text_zh": "Reflect Turn",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_1",
+      "page": 11,
+      "index_on_page": 1,
+      "bbox": [
+        83.0,
+        104.0,
+        369.0,
+        121.0
+      ],
+      "text_en": "B.3 Prompt for Recommendation",
+      "text_zh": "B.3 用于推荐的 Prompt",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_2",
+      "page": 11,
+      "index_on_page": 2,
+      "bbox": [
+        109.0,
+        136.0,
+        232.0,
+        147.0
+      ],
+      "text_en": "Recommendation",
+      "text_zh": "Recommendation",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_3",
+      "page": 11,
+      "index_on_page": 3,
+      "bbox": [
+        107.0,
+        148.0,
+        455.0,
+        273.0
+      ],
+      "text_en": "#Question: A user has given ratings to the following books: <HisItemList>. Additionally, we have information about the user’s preferences encoded in the feature <UserID>. Based on the descriptions and the user’s enjoyment of each book in the historical sequence, construct a persona of the user’s preferences and reevaluate whether the user would enjoy the book titled <TargetItemTitle> with the feature <TargetItemID>. Please begin your analysis with \"Yes\" or \"No\".",
+      "text_zh": "#Question：用户对以下图书给出了评分：<HisItemList>。此外，我们用特征 <UserID> 编码了该用户的偏好。请基于历史序列中各书的描述及用户对它们的喜好程度，构建用户偏好画像，并重新评估该用户是否会喜欢标题为 <TargetItemTitle>、特征为 <TargetItemID> 的图书。请以 \"Yes\" 或 \"No\" 开头进行分析。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_4",
+      "page": 11,
+      "index_on_page": 4,
+      "bbox": [
+        109.0,
+        273.0,
+        169.0,
+        286.0
+      ],
+      "text_en": "#Answer:",
+      "text_zh": "#Answer：",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_5",
+      "page": 11,
+      "index_on_page": 5,
+      "bbox": [
+        83.0,
+        321.0,
+        207.0,
+        338.0
+      ],
+      "text_en": "C Case Study",
+      "text_zh": "C Case Study",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_12",
+      "page": 11,
+      "index_on_page": 12,
+      "bbox": [
+        540.0,
+        114.0,
+        609.0,
+        127.0
+      ],
+      "text_en": "ThinkRec",
+      "text_zh": "ThinkRec",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_13",
+      "page": 11,
+      "index_on_page": 13,
+      "bbox": [
+        539.0,
+        128.0,
+        890.0,
+        556.0
+      ],
+      "text_en": "Yes. Okay, let’s see here. The user has rated several books positively and I need to figure out if they’d like the new book \"If I Run (If i Run Series)\". First, looking at their liked books: They enjoy thrillers with elements of suspense, crime, mystery, family dynamics, abuse themes, and some historical or biographical aspects too. For example, in \"A Child Called It\" there’s childhood trauma, healing, which is a strong theme. Then series like Heist and Millennium have action, romance maybe? But mostly thriller/suspense. Even though it mentions romance in those, the main focus seems on the heists and cybercrime. The next one, \"Saving Parker\", includes American history and children’s angles again. So historical fiction blended with personal stories might be appealing. Also, Jack Reacher novels are part of this list, so that suggests they like gritty detective work or military/authoritative figures. Michael Bennett and Alex Cross also indicate police procedural or investigative mysteries. Now the target book is an If I’m Found sequel, focusing on family, suspense/mystery, murder, love, marriage/divorce... If you run has plot twist, dialogue, compulsive reading, etc., which aligns with what users like from other books. Themes include family and suspense. Their existing likes include both family-focused (e.g., Saving Parker) along with intense plots (Heist, Stieg Larsson). The presence of murder and investigation matches Haunted by Michael Bennet. Marriage/divorced themes aren’t explicitly mentioned elsewhere, but relationships are present in others (Before We... has love story?). So overall, given the overlap in key genre tags (family, thriller, suspension), plus positive reviews on related topics, I think the answer should be Yes.",
+      "text_zh": "Yes。好的，让我分析一下。该用户对若干书籍给出了正面评价，我需要判断他们是否会喜欢新书《If I Run (If i Run Series)》。首先观察他们喜欢的书：包含悬疑、犯罪、神秘、家庭关系、虐待主题，以及一些历史或传记色彩——例如《A Child Called It》中包含童年创伤与治愈这种鲜明主题；Heist、Millennium 等系列则带有动作、可能还有爱情，但主要还是 thriller/suspense；接下来《Saving Parker》又涉及美国历史与儿童视角，因此结合个人故事的历史小说也可能吸引他。Jack Reacher 系列的存在表明他喜欢硬派侦探或带军事/权威色彩的形象；Michael Bennett 与 Alex Cross 同样指向 police procedural 或调查类悬疑。目标书是 If I'm Found 系列续作，聚焦家庭、悬疑/神秘、谋杀、爱情、婚姻/离婚……If You Run 包含情节反转、对话、令人欲罢不能等元素，与该用户喜欢的其他书契合，主题包括家庭与悬疑。其已有的喜爱涵盖以家庭为中心（如《Saving Parker》）以及紧张情节（Heist、Stieg Larsson）。Michael Bennet 的 Haunted 中也有谋杀与调查，能对上目标书的元素。婚姻/离婚主题虽未明确出现在其他书中，但人际关系在其他书里也有出现（如 Before We... 包含爱情线）。综合来看，关键题材标签（家庭、thriller、suspense）的重合，以及对相关主题的正面评价，我认为答案应为 Yes。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_14",
+      "page": 11,
+      "index_on_page": 14,
+      "bbox": [
+        514.0,
+        577.0,
+        741.0,
+        593.0
+      ],
+      "text_en": "D Implementation Details",
+      "text_zh": "D 实现细节",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_15",
+      "page": 11,
+      "index_on_page": 15,
+      "bbox": [
+        513.0,
+        595.0,
+        911.0,
+        637.0
+      ],
+      "text_en": "We implement all the compared methods using PyTorch 2.5. We adopt BCE when not otherwise specified. LLM-based methods are optimized using AdamW, while other models use Adam.",
+      "text_zh": "所有对比方法均基于 PyTorch 2.5 实现。如无特别说明默认使用 BCE 损失。LLM 方法使用 AdamW 优化，其余模型使用 Adam。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_16",
+      "page": 11,
+      "index_on_page": 16,
+      "bbox": [
+        513.0,
+        638.0,
+        913.0,
+        679.0
+      ],
+      "text_en": "Regarding traditional models, we explore the learning rate within the range of [1e-2, 1e-3, 1e-4], the embedding size within the range of [64, 128, 256], and weight decay within the range of [1e-2, 1e-3, . .",
+      "text_zh": "对于传统模型，我们在 [1e-2, 1e-3, 1e-4] 中搜索学习率，在 [64, 128, 256] 中搜索 embedding 维度，在 [1e-2, 1e-3, ..",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_17",
+      "page": 11,
+      "index_on_page": 17,
+      "bbox": [
+        513.0,
+        679.0,
+        913.0,
+        747.0
+      ],
+      "text_en": ". , 1e-7]. As for LLM-based methods, we set the learning rate to 1e-4, and weight decay to 1e-3 to align with CoLLM. For SASRec, we establish the maximum length of historical interaction sequences to 25. We adopt TALLRec’s practice of setting the maximum sequence length to 10 for all other methods.",
+      "text_zh": "., 1e-7] 范围内搜索 weight decay。对于 LLM 方法，学习率设为 1e-4、weight decay 设为 1e-3，与 CoLLM 对齐。SASRec 的历史交互序列最大长度设为 25；其余方法沿用 TALLRec 的做法将最大序列长度设为 10。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_18",
+      "page": 11,
+      "index_on_page": 18,
+      "bbox": [
+        513.0,
+        748.0,
+        913.0,
+        859.0
+      ],
+      "text_en": "Regarding other specific parameters of the baseline models, we adhere to the configurations outlined in their original papers. For the LoRA module, we follow the same configuration as CoLLM, setting ??, ??????ℎ??, ??????????????, ???????????? ?????????????? to 8, 16, 0.05, and “[q proj, v proj]”, respectively. We set the sample rate of reasoning data and recommendation data to 0.2 and 0.8, and the weight of each loss function as follows: $\\alpha = 0 . 1 , \\beta = 0 . 9 , \\eta = 0 . 9 , \\gamma = 0 . 1 .$ We set the temperature coefficient $\\tau$ to 0.1.",
+      "text_zh": "其余 baseline 模型的特定参数遵循其原论文。LoRA 模块的配置与 CoLLM 一致：$r$、alpha、dropout、target modules 分别设为 8、16、0.05 与 \"[q_proj, v_proj]\"。推理数据与推荐数据的采样率分别设为 0.2 和 0.8，各损失的权重为 $\\alpha = 0.1, \\beta = 0.9, \\eta = 0.9, \\gamma = 0.1$，温度系数 $\\tau$ 设为 0.1。",
+      "kind": "body"
+    },
+    {
+      "pid": "p_11_19",
+      "page": 11,
+      "index_on_page": 19,
+      "bbox": [
+        514.0,
+        871.0,
+        620.0,
+        885.0
+      ],
+      "text_en": "E Notation",
+      "text_zh": "E 符号表",
+      "kind": "body"
+    }
+  ]
+}
